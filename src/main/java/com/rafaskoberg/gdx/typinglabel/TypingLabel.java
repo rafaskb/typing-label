@@ -43,6 +43,8 @@ public class TypingLabel extends Label {
 	// Superclass mirroring
 	boolean wrap;
 	String ellipsis;
+	float lastPrefHeight;
+	boolean fontScaleChanged = false;
 
 	////////////////////////////
 	/// --- Constructors --- ///
@@ -346,48 +348,78 @@ public class TypingLabel extends Label {
 		this.wrap = wrap;
 	}
 
-	public void layout () {
-		super.layout();
+	@Override
+	public void setFontScale (float fontScaleX, float fontScaleY) {
+		super.setFontScale(fontScaleX, fontScaleY);
+		this.fontScaleChanged = true;
+	}
 
-		// Manually set the layout text with a different end index.
+	public void layout () {
 		BitmapFontCache cache = getBitmapFontCache();
-		BitmapFont font = cache.getFont();
 		StringBuilder text = getText();
 		GlyphLayout layout = super.getGlyphLayout();
-		float textWidth = layout.width;
-		float textHeight = layout.height;
 		int lineAlign = getLineAlign();
-		boolean wrap = this.wrap && ellipsis == null;
-		int charIndex = MathUtils.clamp(this.charIndex, 0, text.length);
-		layout.setText(font, text, 0, charIndex, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
-
-		// Set cache text (coordinates need to be recalculated)
-		Drawable background = getStyle().background;
 		int labelAlign = getLabelAlign();
+		int charIndex = MathUtils.clamp(this.charIndex, 0, text.length);
+		LabelStyle style = getStyle();
+
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleChanged) font.getData().setScale(getFontScaleX(), getFontScaleY());
+
+		boolean wrap = this.wrap && ellipsis == null;
+		if (wrap) {
+			float prefHeight = getPrefHeight();
+			if (prefHeight != lastPrefHeight) {
+				lastPrefHeight = prefHeight;
+				invalidateHierarchy();
+			}
+		}
+
+		float width = getWidth(), height = getHeight();
+		Drawable background = style.background;
 		float x = 0, y = 0;
 		if (background != null) {
 			x = background.getLeftWidth();
 			y = background.getBottomHeight();
+			width -= background.getLeftWidth() + background.getRightWidth();
+			height -= background.getBottomHeight() + background.getTopHeight();
 		}
+
+		float textWidth, textHeight;
 		if (wrap || text.indexOf("\n") != -1) {
+			// If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
+			layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
+			textWidth = layout.width;
+			textHeight = layout.height;
+
 			if ((labelAlign & Align.left) == 0) {
 				if ((labelAlign & Align.right) != 0)
-					x += getWidth() - textWidth;
+					x += width - textWidth;
 				else
-					x += (getWidth() - textWidth) / 2;
+					x += (width - textWidth) / 2;
 			}
-		}
-		if ((labelAlign & Align.top) != 0) {
-			y += cache.getFont().isFlipped() ? 0 : getHeight() - textHeight;
-			y += getStyle().font.getDescent();
-		} else if ((labelAlign & Align.bottom) != 0) {
-			y += cache.getFont().isFlipped() ? getHeight() - textHeight : 0;
-			y -= getStyle().font.getDescent();
 		} else {
-			y += (getHeight() - textHeight) / 2;
+			textWidth = width;
+			textHeight = font.getData().capHeight;
+		}
+
+		if ((labelAlign & Align.top) != 0) {
+			y += cache.getFont().isFlipped() ? 0 : height - textHeight;
+			y += style.font.getDescent();
+		} else if ((labelAlign & Align.bottom) != 0) {
+			y += cache.getFont().isFlipped() ? height - textHeight : 0;
+			y -= style.font.getDescent();
+		} else {
+			y += (height - textHeight) / 2;
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
+
+		layout.setText(font, text, 0, charIndex, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
 		cache.setText(layout, x, y);
+
+		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 }
