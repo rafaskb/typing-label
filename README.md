@@ -14,7 +14,8 @@ It works as a drop-in replacement for normal [Scene2D Labels](https://github.com
 Simple example with variables:
 ```java
 // Create some text with tokens
-String text = "{COLOR=RED}Hello,{WAIT}{SLOWER}{COLOR=ORANGE} world!{RESET} My name is {VAR=name} and I like {VAR=i_like}.";
+String text = "{COLOR=RED}Hello,{WAIT}{SLOWER}{COLOR=ORANGE} world!"
+    + "{RESET} My name is {VAR=name} and I like {VAR=i_like}.";
 
 // Create a TypingLabel instance with your custom text
 TypingLabel label = new TypingLabel(text, skin);
@@ -30,7 +31,8 @@ stage.add(label);
 It's also possible to fire events, according to their position in the text:
 ```java
 // Create text with events
-String text = "{SPEED=0.25}This is an {EVENT=example}example of how to {EVENT=fire}fire {EVENT=events}events!";
+String text = "{SPEED=0.25}This is an {EVENT=example}example of "
+    + "how to {EVENT=fire}fire {EVENT=events}events!";
 
 TypingLabel label = new TypingLabel(text, skin);
 
