@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.rafaskoberg.gdx</groupId>
+	<artifactId>typing-label</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>typing-label</name>
+	<description>A libGDX Label that appears as if it was being typed in real time.</description>
+	<url>http://github.com/rafaskb/typing-label</url>
+	<issueManagement>
+		<url>http://github.com/rafaskb/typing-label/issues</url>
+	</issueManagement>
+
+	<licenses>
+		<license>
+			<name>Apache Licence 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:https://github.com/rafaskb/typing-label.git</connection>
+		<developerConnection>scm:git:https://github.com/rafaskb/typing-label.git</developerConnection>
+		<url>http://github.com/rafaskb/typing-label</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>gdx-nightlies</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<gdx.version>1.9.5</gdx.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx</artifactId>
+			<version>${gdx.version}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-backend-lwjgl</artifactId>
+			<version>${gdx.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-platform</artifactId>
+			<classifier>natives-desktop</classifier>
+			<version>${gdx.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>
