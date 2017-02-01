@@ -120,7 +120,7 @@ public class TypingLabel extends Label {
 	////////////////////////////
 
 	/** Returns the {@link TypingListener} associated with this label. May be {@code null}. */
-	public TypingListener getTypingLabelListener () {
+	public TypingListener getTypingListener () {
 		return listener;
 	}
 
