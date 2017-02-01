@@ -1,5 +1,5 @@
 
-package com.rafskoberg.gdx.typinglabel;
+package com.rafaskoberg.gdx.typinglabel;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
