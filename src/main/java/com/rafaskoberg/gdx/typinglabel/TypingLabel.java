@@ -2,9 +2,12 @@
 package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -13,6 +16,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /** An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the use of
@@ -35,7 +40,8 @@ public class TypingLabel extends Label {
 	private final StringBuilder originalText = new StringBuilder();
 	private float textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 	private float charCooldown = textSpeed;
-	private int charIndex = -1;
+	private int rawCharIndex = -1; // All chars, including color codes
+	private int glyphCharIndex = -1; // Only renderable chars, excludes color codes
 	private boolean parsed = false;
 	private boolean paused = false;
 	private boolean ended = false;
@@ -150,7 +156,8 @@ public class TypingLabel extends Label {
 
 	/** Skips the char progression to the end, showing the entire label. Useful for when users don't want to wait for too long. */
 	public void skipToTheEnd () {
-		charIndex += getText().length;
+		rawCharIndex += getText().length;
+		glyphCharIndex = rawCharIndex;
 	}
 
 	/** Returns whether or not this label is paused. */
@@ -183,7 +190,8 @@ public class TypingLabel extends Label {
 	public void restart (CharSequence newText) {
 		textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 		charCooldown = textSpeed;
-		charIndex = -1;
+		rawCharIndex = -1;
+		glyphCharIndex = -1;
 		parsed = false;
 		paused = false;
 		ended = false;
@@ -253,26 +261,30 @@ public class TypingLabel extends Label {
 
 		// Process chars while there's room for it
 		while (charCooldown < 0.0f) {
-			charIndex++;
+			rawCharIndex++;
 
 			// Invalidate label layout, so the new character is passed to the BitmapFontCache
 			invalidate();
 
 			// If char progression is finished, notify listener and abort routine
-			if (charIndex > getText().length) {
+			if (rawCharIndex > getText().length) {
 				if (listener != null) listener.end();
 				ended = true;
 				return;
 			}
 
 			// Get next character and calculate cooldown increment
-			int safeIndex = MathUtils.clamp(charIndex - 1, 0, getText().length);
-			Character ch = Character.valueOf(getText().charAt(safeIndex));
+			int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length);
+			char primitiveChar = getText().charAt(safeIndex);
+			Character ch = Character.valueOf(primitiveChar);
 			float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
 			charCooldown += textSpeed * intervalMultiplier;
 
+			// Increase glyph char index for all characters, except new lines.
+			if (primitiveChar != '\n') glyphCharIndex++;
+
 			// Process tokens according to the current index
-			while (tokenEntries.size > 0 && tokenEntries.peek().index == charIndex) {
+			while (tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex) {
 				TokenEntry entry = tokenEntries.pop();
 				switch (entry.token) {
 				case WAIT:
@@ -290,7 +302,7 @@ public class TypingLabel extends Label {
 
 				case SKIP:
 					if (entry.stringValue != null) {
-						charIndex += entry.stringValue.length();
+						rawCharIndex += entry.stringValue.length();
 					}
 					break;
 
@@ -354,13 +366,14 @@ public class TypingLabel extends Label {
 		this.fontScaleChanged = true;
 	}
 
+	@Override
 	public void layout () {
+		// Mimics superclass, but use accessible getters instead.
 		BitmapFontCache cache = getBitmapFontCache();
 		StringBuilder text = getText();
 		GlyphLayout layout = super.getGlyphLayout();
 		int lineAlign = getLineAlign();
 		int labelAlign = getLabelAlign();
-		int charIndex = MathUtils.clamp(this.charIndex, 0, text.length);
 		LabelStyle style = getStyle();
 
 		BitmapFont font = cache.getFont();
@@ -416,10 +429,49 @@ public class TypingLabel extends Label {
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
-		layout.setText(font, text, 0, charIndex, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+
+		// Layout text has been set and all characters have been properly positioned.
+		// Remove the exceeding glyphs so they're not rendered.
+		int glyphCountdown = glyphCharIndex;
+		Array<GlyphRun> runs = layout.runs;
+		if (runs != null) {
+			for (int i = 0; i < runs.size; i++) {
+				Array<Glyph> glyphs = runs.get(i).glyphs;
+				if (glyphs.size < glyphCountdown) {
+					glyphCountdown -= glyphs.size;
+					continue;
+				}
+
+				for (int j = 0; j < glyphs.size; j++) {
+					glyphCountdown--;
+					if (glyphCountdown < 0) {
+						glyphs.removeRange(j, glyphs.size - 1);
+						break;
+					}
+				}
+
+				if (glyphs.size == 0) {
+					// GlyphRuns are Poolable, free them to the pool before removing
+					Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
+					for(int k = i; k < runs.size; k++) {
+						glyphRunPool.free(runs.get(k));
+					}
+					runs.removeRange(i, runs.size - 1);
+					break;
+				}
+			}
+		}
+
+		// Continue superclass behavior
 		cache.setText(layout, x, y);
 
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+	}
+
+	@Override
+	public void draw (Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
 	}
 
 }
