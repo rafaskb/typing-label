@@ -14,10 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /** An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the use of
@@ -38,10 +37,15 @@ public class TypingLabel extends Label {
 
 	// Internal state
 	private final StringBuilder originalText = new StringBuilder();
+	private final Array<Glyph> glyphCache = new Array<Glyph>();
+	private final IntArray glyphRunCapacities = new IntArray();
+	private final IntArray offsetCache = new IntArray();
 	private float textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 	private float charCooldown = textSpeed;
 	private int rawCharIndex = -1; // All chars, including color codes
 	private int glyphCharIndex = -1; // Only renderable chars, excludes color codes
+	private int cachedGlyphCharIndex = -1; // Last glyphCharIndex sent to the cache
+	private float lastLayoutX = 0, lastLayoutY = 0;
 	private boolean parsed = false;
 	private boolean paused = false;
 	private boolean ended = false;
@@ -188,16 +192,29 @@ public class TypingLabel extends Label {
 
 	/** Restarts this label with the given text and starts the char progression right away. All tokens are automatically parsed. */
 	public void restart (CharSequence newText) {
+		// Reset cache collections
+		GlyphUtils.freeAll(glyphCache);
+		glyphCache.clear();
+		glyphRunCapacities.clear();
+		offsetCache.clear();
+
+		// Reset state
 		textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 		charCooldown = textSpeed;
 		rawCharIndex = -1;
 		glyphCharIndex = -1;
+		cachedGlyphCharIndex = -1;
+		lastLayoutX = 0;
+		lastLayoutY = 0;
 		parsed = false;
 		paused = false;
 		ended = false;
 
+		// Set new text
 		this.setText(newText);
+		invalidate();
 
+		// Parse tokens
 		tokenEntries.clear();
 		parseTokens();
 	}
@@ -262,9 +279,6 @@ public class TypingLabel extends Label {
 		// Process chars while there's room for it
 		while (charCooldown < 0.0f) {
 			rawCharIndex++;
-
-			// Invalidate label layout, so the new character is passed to the BitmapFontCache
-			invalidate();
 
 			// If char progression is finished, notify listener and abort routine
 			if (rawCharIndex > getText().length) {
@@ -368,7 +382,7 @@ public class TypingLabel extends Label {
 
 	@Override
 	public void layout () {
-		// Mimics superclass, but use accessible getters instead.
+		// --- SUPERCLASS IMPLEMENTATION (but with accessible getters instead) ---
 		BitmapFontCache cache = getBitmapFontCache();
 		StringBuilder text = getText();
 		GlyphLayout layout = super.getGlyphLayout();
@@ -430,47 +444,141 @@ public class TypingLabel extends Label {
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+		cache.setText(layout, x, y);
 
-		// Layout text has been set and all characters have been properly positioned.
-		// Remove the exceeding glyphs so they're not rendered.
-		int glyphCountdown = glyphCharIndex;
+		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+		// --- END OF SUPERCLASS IMPLEMENTATION ---
+
+		// Store coordinates passed to BitmapFontCache
+		lastLayoutX = x;
+		lastLayoutY = y;
+
+		// Perform cache layout operation, where the magic happens
+		layoutCache();
+	}
+
+	/** Reallocate glyph clones according to the updated {@link GlyphLayout}. This should only be called when the text or the
+	 * layout changes. */
+	private void layoutCache () {
+		BitmapFontCache cache = getBitmapFontCache();
+		GlyphLayout layout = super.getGlyphLayout();
 		Array<GlyphRun> runs = layout.runs;
-		if (runs != null) {
-			for (int i = 0; i < runs.size; i++) {
-				Array<Glyph> glyphs = runs.get(i).glyphs;
-				if (glyphs.size < glyphCountdown) {
-					glyphCountdown -= glyphs.size;
-					continue;
-				}
 
-				for (int j = 0; j < glyphs.size; j++) {
-					glyphCountdown--;
-					if (glyphCountdown < 0) {
-						glyphs.removeRange(j, glyphs.size - 1);
-						break;
-					}
-				}
+		// Store GlyphRun sizes and count how many glyphs we have
+		int glyphCount = 0;
+		glyphRunCapacities.setSize(runs.size);
+		for (int i = 0; i < runs.size; i++) {
+			Array<Glyph> glyphs = runs.get(i).glyphs;
+			glyphRunCapacities.set(i, glyphs.size);
+			glyphCount += glyphs.size;
+		}
 
-				if (glyphs.size == 0) {
-					// GlyphRuns are Poolable, free them to the pool before removing
-					Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
-					for(int k = i; k < runs.size; k++) {
-						glyphRunPool.free(runs.get(k));
-					}
-					runs.removeRange(i, runs.size - 1);
+		// Make sure our cache array can hold all glyphs
+		if (glyphCache.size < glyphCount) {
+			glyphCache.setSize(glyphCount);
+			offsetCache.setSize(glyphCount * 2);
+		}
+
+		// Clone original glyphs with independent instances
+		int index = -1;
+		for (int i = 0; i < runs.size; i++) {
+			Array<Glyph> glyphs = runs.get(i).glyphs;
+			for (int j = 0; j < glyphs.size; j++) {
+				index++;
+
+				// Get original glyph
+				Glyph original = glyphs.get(j);
+
+				// Get clone glyph
+				Glyph clone = null;
+				if (index < glyphCache.size) {
+					clone = glyphCache.get(index);
+				}
+				if (clone == null) {
+					clone = GlyphUtils.obtain();
+					glyphCache.set(index, clone);
+				}
+				GlyphUtils.clone(original, clone);
+
+				// Store offset data
+				offsetCache.set(index * 2, clone.xoffset);
+				offsetCache.set(index * 2 + 1, clone.yoffset);
+
+				// Replace glyph in original array
+				glyphs.set(j, clone);
+			}
+		}
+
+		// Remove exceeding glyphs from original array
+		int glyphCountdown = glyphCharIndex;
+		for (int i = 0; i < runs.size; i++) {
+			Array<Glyph> glyphs = runs.get(i).glyphs;
+			if (glyphs.size < glyphCountdown) {
+				glyphCountdown -= glyphs.size;
+				continue;
+			}
+
+			for (int j = 0; j < glyphs.size; j++) {
+				glyphCountdown--;
+				if (glyphCountdown < 0) {
+					glyphs.removeRange(j, glyphs.size - 1);
 					break;
 				}
 			}
 		}
 
-		// Continue superclass behavior
-		cache.setText(layout, x, y);
+		// Pass new layout with custom glyphs to BitmapFontCache
+		cache.setText(layout, lastLayoutX, lastLayoutY);
+	}
 
-		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+	/** Adds cached glyphs to the active BitmapFontCache as the char index progresses. */
+	private void addMissingGlyphs () {
+		// Add additional glyphs to layout array, if any
+		int glyphLeft = glyphCharIndex - cachedGlyphCharIndex;
+		if (glyphLeft < 1) return;
+
+		// Get runs
+		GlyphLayout layout = super.getGlyphLayout();
+		Array<GlyphRun> runs = layout.runs;
+
+		// Iterate through GlyphRuns to find the next glyph spot
+		int glyphCount = 0;
+		for (int runIndex = 0; runIndex < glyphRunCapacities.size; runIndex++) {
+			int runCapacity = glyphRunCapacities.get(runIndex);
+			if ((glyphCount + runCapacity) < cachedGlyphCharIndex) {
+				glyphCount += runCapacity;
+				continue;
+			}
+
+			// Get run and increase glyphCount up to its current size
+			Array<Glyph> glyphs = runs.get(runIndex).glyphs;
+			glyphCount += glyphs.size;
+
+			// Next glyphs go here
+			while (glyphLeft > 0) {
+
+				// Skip run if this one is full
+				int runSize = glyphs.size;
+				if (runCapacity == runSize) {
+					break;
+				}
+
+				// Put new glyph to this run
+				cachedGlyphCharIndex++;
+				glyphCount++;
+				glyphLeft--;
+				glyphs.add(glyphCache.get(cachedGlyphCharIndex));
+			}
+		}
+
+		// Update cache with new glyphs
+		getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
 	}
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
+		super.validate();
+		addMissingGlyphs();
 		super.draw(batch, parentAlpha);
 	}
 
