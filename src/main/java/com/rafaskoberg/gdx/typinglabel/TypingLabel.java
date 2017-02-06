@@ -375,8 +375,26 @@ public class TypingLabel extends Label {
 	}
 
 	@Override
+	public void setFontScale (float fontScale) {
+		super.setFontScale(fontScale);
+		this.fontScaleChanged = true;
+	}
+
+	@Override
 	public void setFontScale (float fontScaleX, float fontScaleY) {
 		super.setFontScale(fontScaleX, fontScaleY);
+		this.fontScaleChanged = true;
+	}
+
+	@Override
+	public void setFontScaleX (float fontScaleX) {
+		super.setFontScaleX(fontScaleX);
+		this.fontScaleChanged = true;
+	}
+
+	@Override
+	public void setFontScaleY (float fontScaleY) {
+		super.setFontScaleY(fontScaleY);
 		this.fontScaleChanged = true;
 	}
 
@@ -443,10 +461,11 @@ public class TypingLabel extends Label {
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
-		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
-		cache.setText(layout, x, y);
-
+		// Don't set the layout or cache now, since we progressively update both over time.
+		// layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+		// cache.setText(layout, x, y);
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+
 		// --- END OF SUPERCLASS IMPLEMENTATION ---
 
 		// Store coordinates passed to BitmapFontCache
@@ -454,6 +473,7 @@ public class TypingLabel extends Label {
 		lastLayoutY = y;
 
 		// Perform cache layout operation, where the magic happens
+		GlyphUtils.freeAll(glyphCache);
 		layoutCache();
 	}
 
@@ -499,7 +519,11 @@ public class TypingLabel extends Label {
 					glyphCache.set(index, clone);
 				}
 				GlyphUtils.clone(original, clone);
-
+				clone.width *= getFontScaleX();
+				clone.height *= getFontScaleY();
+				clone.xoffset *= getFontScaleX();
+				clone.yoffset *= getFontScaleY();
+				
 				// Store offset data
 				offsetCache.set(index * 2, clone.xoffset);
 				offsetCache.set(index * 2 + 1, clone.yoffset);
