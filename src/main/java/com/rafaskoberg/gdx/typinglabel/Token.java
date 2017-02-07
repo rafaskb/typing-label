@@ -17,6 +17,14 @@ enum Token {
 	EVENT         ("EVENT"),
 	RESET         ("RESET"),
 	
+	// Effects
+	SHAKE         ("SHAKE"),
+	ENDSHAKE      ("ENDSHAKE"),
+	WAVE          ("WAVE"),
+	ENDWAVE       ("ENDWAVE"),
+	JUMP          ("JUMP"),
+	ENDJUMP       ("ENDJUMP"),
+	
 	// Private
 	SKIP          ("SKIP");
 	// @on
@@ -25,6 +33,11 @@ enum Token {
 
 	private Token (String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString () {
+		return name;
 	}
 
 	static Token fromName (String name) {

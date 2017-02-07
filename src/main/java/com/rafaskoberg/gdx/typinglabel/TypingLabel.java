@@ -18,6 +18,10 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.rafaskoberg.gdx.typinglabel.effects.Effect;
+import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /** An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the use of
  * tokens in the following format: <tt>{TOKEN=PARAMETER}</tt>. */
@@ -40,6 +44,7 @@ public class TypingLabel extends Label {
 	private final Array<Glyph> glyphCache = new Array<Glyph>();
 	private final IntArray glyphRunCapacities = new IntArray();
 	private final IntArray offsetCache = new IntArray();
+	private final Array<Effect> activeEffects = new Array<Effect>();
 	private float textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 	private float charCooldown = textSpeed;
 	private int rawCharIndex = -1; // All chars, including color codes
@@ -49,6 +54,7 @@ public class TypingLabel extends Label {
 	private boolean parsed = false;
 	private boolean paused = false;
 	private boolean ended = false;
+	private boolean skipping = false;
 
 	// Superclass mirroring
 	boolean wrap;
@@ -160,8 +166,7 @@ public class TypingLabel extends Label {
 
 	/** Skips the char progression to the end, showing the entire label. Useful for when users don't want to wait for too long. */
 	public void skipToTheEnd () {
-		rawCharIndex += getText().length;
-		glyphCharIndex = rawCharIndex;
+		skipping = true;
 	}
 
 	/** Returns whether or not this label is paused. */
@@ -197,6 +202,7 @@ public class TypingLabel extends Label {
 		glyphCache.clear();
 		glyphRunCapacities.clear();
 		offsetCache.clear();
+		activeEffects.clear();
 
 		// Reset state
 		textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
@@ -209,6 +215,7 @@ public class TypingLabel extends Label {
 		parsed = false;
 		paused = false;
 		ended = false;
+		skipping = false;
 
 		// Set new text
 		this.setText(newText);
@@ -264,9 +271,38 @@ public class TypingLabel extends Label {
 		}
 
 		// Update cooldown and process char progression
-		if (!ended && !paused) {
-			if ((charCooldown -= delta) < 0.0f) {
+		if (skipping || (!ended && !paused)) {
+			if (skipping || (charCooldown -= delta) < 0.0f) {
 				processCharProgression();
+			}
+		}
+
+		// Restore glyph offsets
+		if (activeEffects.size > 0) {
+			for (int i = 0; i < glyphCache.size; i++) {
+				Glyph glyph = glyphCache.get(i);
+				glyph.xoffset = offsetCache.get(i * 2);
+				glyph.yoffset = offsetCache.get(i * 2 + 1);
+			}
+		}
+
+		// Apply effects
+		for (int i = activeEffects.size - 1; i >= 0; i--) {
+			Effect effect = activeEffects.get(i);
+			effect.update(delta);
+			int start = effect.indexStart;
+			int end = effect.indexEnd >= 0 ? effect.indexEnd : glyphCharIndex;
+
+			// If effect is finished, remove it
+			if (effect.isFinished()) {
+				activeEffects.removeIndex(i);
+				continue;
+			}
+
+			// Apply effect to glyph
+			for (int j = start; j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
+				Glyph glyph = glyphCache.get(j);
+				effect.apply(glyph, j);
 			}
 		}
 	}
@@ -277,7 +313,7 @@ public class TypingLabel extends Label {
 		int charCounter = 0;
 
 		// Process chars while there's room for it
-		while (charCooldown < 0.0f) {
+		while (skipping || charCooldown < 0.0f) {
 			rawCharIndex++;
 
 			// If char progression is finished, notify listener and abort routine
@@ -326,6 +362,46 @@ public class TypingLabel extends Label {
 					}
 					break;
 
+				case SHAKE:
+				case WAVE:
+				case JUMP:
+					entry.effect.indexStart = glyphCharIndex;
+					activeEffects.add(entry.effect);
+					break;
+
+				case ENDSHAKE:
+					for (int i = 0; i < activeEffects.size; i++) {
+						Effect effect = activeEffects.get(i);
+						if (effect.indexEnd < 0) {
+							if (effect instanceof ShakeEffect) {
+								effect.indexEnd = glyphCharIndex;
+							}
+						}
+					}
+					break;
+
+				case ENDWAVE:
+					for (int i = 0; i < activeEffects.size; i++) {
+						Effect effect = activeEffects.get(i);
+						if (effect.indexEnd < 0) {
+							if (effect instanceof WaveEffect) {
+								effect.indexEnd = glyphCharIndex;
+							}
+						}
+					}
+					break;
+
+				case ENDJUMP:
+					for (int i = 0; i < activeEffects.size; i++) {
+						Effect effect = activeEffects.get(i);
+						if (effect.indexEnd < 0) {
+							if (effect instanceof JumpEffect) {
+								effect.indexEnd = glyphCharIndex;
+							}
+						}
+					}
+					break;
+
 				default:
 					break;
 				}
@@ -334,7 +410,7 @@ public class TypingLabel extends Label {
 			// Increment char counter and break loop if enough chars were processed
 			charCounter++;
 			int charLimit = TypingConfig.CHAR_LIMIT_PER_FRAME;
-			if (charLimit > 0 && charCounter > charLimit) {
+			if (!skipping && charLimit > 0 && charCounter > charLimit) {
 				charCooldown = textSpeed;
 				break;
 			}
@@ -523,7 +599,7 @@ public class TypingLabel extends Label {
 				clone.height *= getFontScaleY();
 				clone.xoffset *= getFontScaleX();
 				clone.yoffset *= getFontScaleY();
-				
+
 				// Store offset data
 				offsetCache.set(index * 2, clone.xoffset);
 				offsetCache.set(index * 2 + 1, clone.yoffset);
@@ -594,15 +670,17 @@ public class TypingLabel extends Label {
 				glyphs.add(glyphCache.get(cachedGlyphCharIndex));
 			}
 		}
-
-		// Update cache with new glyphs
-		getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
 	}
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		super.validate();
 		addMissingGlyphs();
+
+		// Update cache with new glyphs
+		// Check if we have special effects, otherwise only run this when necessary
+		getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
+
 		super.draw(batch, parentAlpha);
 	}
 

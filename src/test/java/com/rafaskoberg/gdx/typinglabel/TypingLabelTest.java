@@ -22,9 +22,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.rafaskoberg.gdx.typinglabel.TypingConfig;
-import com.rafaskoberg.gdx.typinglabel.TypingLabel;
-import com.rafaskoberg.gdx.typinglabel.TypingListener;
 
 public class TypingLabelTest extends ApplicationAdapter {
 	Skin skin;
@@ -119,28 +116,28 @@ public class TypingLabelTest extends ApplicationAdapter {
 		// Create text with tokens
 		// @off
 		final StringBuilder text = new StringBuilder()
-			.append("{SLOWER}{COLOR=SCARLET} Welcome,{WAIT} {VAR=title}!")
+			.append("{SLOWER}{COLOR=SCARLET}{WAVE} Welcome,{WAIT} {VAR=title}!{ENDWAVE}")
 			.append("{FAST}\n\n")
-			.append("{RESET} This is a simple test to show you")
-			.append("{COLOR=ROYAL} how to make dialogues {SLOW}fun again!")
+			.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you")
+			.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}")
 			.append("{NORMAL}\n")
 			.append("{NORMAL}{CLEARCOLOR} With this library you can control the flow of the text with")
-			.append("{COLOR=#ff0000} tokens,{CLEARCOLOR}{WAIT=0.7}")
+			.append("{COLOR=#ff0000} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}")
 			.append("{NORMAL}\n")
 			.append("{SPEED=2.50}{COLOR=LIME} making the text go really fast{WAIT}")
-			.append("{SPEED=0.25}{COLOR=FOREST} or extremely slow.")
+			.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow{ENDWAVE}.")
 			.append("{NORMAL}\n")
-			.append("{RESET} You can also wait for a second{WAIT=1} or two{WAIT=2},")
+			.append("{RESET} You can also wait for a {SHAKE=1;2;2}second{ENDSHAKE}{WAIT=1} {SHAKE=1;2;3}or two{ENDSHAKE}{WAIT=2},")
 			.append("{COLOR=LIME} just to catch an event in code{EVENT=sample}!{WAIT}")
 			.append("{NORMAL}\n\n")
-			.append("{COLOR=GOLDENROD}{SLOWER} Imagine the possibilities! =D");
+			.append("{COLOR=GOLDENROD}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
 		// @on
 
 		// Create label
 		final TypingLabel label = new TypingLabel(text, skin);
 
 		// Set variable replacements for the {VARIABLE} token
-		label.setVariable("title", "brave programmer");
+		label.setVariable("title", "curious human");
 
 		// Finally parse tokens in the label text.
 		label.parseTokens();
@@ -212,13 +209,13 @@ public class TypingLabelTest extends ApplicationAdapter {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "TypingLabel Test";
-		config.width = 640;
-		config.height = 360;
+		config.width = 720;
+		config.height = 405;
 		config.depth = 16;
 		config.fullscreen = false;
 		config.resizable = false;
 		config.foregroundFPS = 30;
-		config.backgroundFPS = 5;
+		config.backgroundFPS = 30;
 
 		new LwjglApplication(new TypingLabelTest(), config);
 	}

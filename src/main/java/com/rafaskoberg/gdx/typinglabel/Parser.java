@@ -5,12 +5,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.rafaskoberg.gdx.typinglabel.effects.Effect;
+import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
 	private static final Pattern PATTERN_TOKEN_STRIP = compileTokenPattern();
 	private static final Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
-	private static final String RESET_REPLACEMENT = "{" + Token.CLEARCOLOR.name + "}{" + Token.NORMAL.name + "}";
+	private static final String RESET_REPLACEMENT = getResetReplacement();
 
 	public static final int INDEX_TOKEN = 1;
 	public static final int INDEX_PARAM = 2;
@@ -122,7 +126,9 @@ class Parser {
 
 			// Get token, param and index of where the token begins
 			final Token token = Token.fromName(m.group(INDEX_TOKEN));
-			final String param = m.groupCount() == INDEX_PARAM ? m.group(INDEX_PARAM) : null;
+			final String paramsString = m.groupCount() == INDEX_PARAM ? m.group(INDEX_PARAM) : null;
+			final String[] params = paramsString == null ? new String[0] : paramsString.split(";");
+			final String firstParam = params.length > 0 ? params[0] : null;
 			final int index = m.start(0);
 
 			// If token couldn't be parsed, move one index forward to continue the search
@@ -134,15 +140,16 @@ class Parser {
 			// Process tokens
 			float floatValue = 0;
 			String stringValue = null;
+			Effect effect = null;
 			switch (token) {
 			case WAIT:
-				floatValue = stringToFloat(param, TypingConfig.DEFAULT_WAIT_VALUE);
+				floatValue = stringToFloat(firstParam, TypingConfig.DEFAULT_WAIT_VALUE);
 				break;
 
 			case SPEED:
 				float minModifier = TypingConfig.MIN_SPEED_MODIFIER;
 				float maxModifier = TypingConfig.MAX_SPEED_MODIFIER;
-				float modifier = MathUtils.clamp(stringToFloat(param, 1), minModifier, maxModifier);
+				float modifier = MathUtils.clamp(stringToFloat(firstParam, 1), minModifier, maxModifier);
 				floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / modifier;
 				break;
 			case SLOWER:
@@ -162,7 +169,61 @@ class Parser {
 				break;
 
 			case EVENT:
-				stringValue = param;
+				stringValue = paramsString;
+				break;
+
+			case SHAKE:
+				// distance;intensity;duration
+				effect = new ShakeEffect(label);
+				if (params.length > 0) {
+					((ShakeEffect)effect).distance = stringToFloat(params[0], 1);
+				}
+				if (params.length > 1) {
+					((ShakeEffect)effect).intensity = stringToFloat(params[1], 1);
+				}
+				if (params.length > 2) {
+					((ShakeEffect)effect).duration = stringToFloat(params[2], -1);
+				}
+				break;
+			case ENDSHAKE:
+				break;
+
+			case WAVE:
+				// distance;frequency;intensity;duration
+				effect = new WaveEffect(label);
+				if (params.length > 0) {
+					((WaveEffect)effect).distance = stringToFloat(params[0], 1);
+				}
+				if (params.length > 1) {
+					((WaveEffect)effect).frequency = stringToFloat(params[1], 1);
+				}
+				if (params.length > 2) {
+					((WaveEffect)effect).intensity = stringToFloat(params[2], 1);
+				}
+				if (params.length > 3) {
+					((WaveEffect)effect).duration = stringToFloat(params[3], -1);
+				}
+				break;
+			case ENDWAVE:
+				break;
+
+			case JUMP:
+				// distance;frequency;intensity;duration
+				effect = new JumpEffect(label);
+				if (params.length > 0) {
+					((JumpEffect)effect).distance = stringToFloat(params[0], 1);
+				}
+				if (params.length > 1) {
+					((JumpEffect)effect).frequency = stringToFloat(params[1], 1);
+				}
+				if (params.length > 2) {
+					((JumpEffect)effect).intensity = stringToFloat(params[2], 1);
+				}
+				if (params.length > 3) {
+					((JumpEffect)effect).duration = stringToFloat(params[3], -1);
+				}
+				break;
+			case ENDJUMP:
 				break;
 
 			default:
@@ -173,6 +234,7 @@ class Parser {
 
 			// Register token
 			TokenEntry entry = new TokenEntry(token, index, floatValue, stringValue);
+			entry.effect = effect;
 			label.tokenEntries.add(entry);
 
 			// Remove token from string
@@ -228,8 +290,19 @@ class Parser {
 			sb.append(tokens[i]);
 			if ((i + 1) < tokens.length) sb.append('|');
 		}
-		sb.append(")(?:=([#_ \\.\\w]+))?\\}");
+		sb.append(")(?:=([;#_ \\.\\w]+))?\\}");
 		return Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE);
+	}
+
+	/** Returns the replacement string intended to be used on {RESET} tokens. */
+	private static String getResetReplacement () {
+		Token[] tokens = {Token.CLEARCOLOR, Token.NORMAL, Token.ENDJUMP, Token.ENDSHAKE, Token.ENDWAVE};
+
+		StringBuilder sb = new StringBuilder();
+		for (Token token : tokens) {
+			sb.append('{').append(token.name).append('}');
+		}
+		return sb.toString();
 	}
 
 }
