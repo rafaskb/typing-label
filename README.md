@@ -1,6 +1,6 @@
 # TypingLabel
 
-[![Maven](https://img.shields.io/bintray/v/rafaskb/maven/typing-label.svg?label=maven)]()
+[![Maven Central](https://img.shields.io/maven-central/v/com.rafaskoberg.gdx/typing-label.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22typing-label%22)
 [![license](https://img.shields.io/github/license/rafaskb/typing-label.svg)](https://github.com/rafaskb/typing-label/blob/master/LICENSE)
 
 A libGDX Label that appears as if it was being typed in real time.
