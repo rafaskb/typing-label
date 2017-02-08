@@ -510,7 +510,8 @@ public class TypingLabel extends Label {
 		}
 
 		float textWidth, textHeight;
-		if (wrap || text.indexOf("\n") != -1) {
+		// if (wrap || text.indexOf("\n") != -1)
+		{
 			// If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
 			layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
 			textWidth = layout.width;
@@ -522,9 +523,9 @@ public class TypingLabel extends Label {
 				else
 					x += (width - textWidth) / 2;
 			}
-		} else {
-			textWidth = width;
-			textHeight = font.getData().capHeight;
+			// } else {
+			// textWidth = width;
+			// textHeight = font.getData().capHeight;
 		}
 
 		if ((labelAlign & Align.top) != 0) {
