@@ -1,0 +1,117 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://dl.bintray.com/palantir/releases" }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'com.jfrog.bintray'
+
+sourceCompatibility = 1.7
+
+version '1.0.0'
+group 'com.rafaskoberg.gdx'
+def projectName = 'typing-label'
+def projectDescription = 'A libGDX Label that appears as if it was being typed in real time.'
+
+def gdxVersion = '1.9.5'
+
+// Disable JDK 8's doclint
+// http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            // The -quiet is because of some sort of weird JDK JavaCompiler bug: https://discuss.gradle.org/t/passing-arguments-to-compiler-and-javadoc/1661
+            options.addStringOption('Xdoclint:all,-missing', '-quiet')
+        }
+    }
+}
+
+jar {
+    baseName = projectName
+    manifest {
+        attributes 'Implementation-Title': projectName,
+                   'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: 'com.badlogicgames.gdx', name: 'gdx', version: gdxVersion
+    testCompile group: 'com.badlogicgames.gdx', name: 'gdx-backend-lwjgl', version: gdxVersion
+    testCompile group: 'com.badlogicgames.gdx', name: 'gdx-platform', version: gdxVersion, classifier: 'natives-desktop'
+}
+
+modifyPom {
+    project {
+        name projectName
+        description projectDescription
+        url 'https://github.com/rafaskb/typing-label'
+
+        scm {
+            url 'https://github.com/rafaskb/typing-label'
+            connection 'scm:https://rafaskb@github.com/rafaskb/label.git'
+            developerConnection 'scm:git://github.com/rafaskb/label.git'
+        }
+
+        licenses {
+            license {
+                name 'The MIT License (MIT)'
+                url 'https://mit-license.org/'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'rafaskb'
+                name 'Rafa Skoberg'
+                email 'rafa.skoberg@gmail.com'
+            }
+        }
+    }
+}
+
+// Sign artifacts with Bintray instead of Nexus
+nexus {
+    sign = false
+}
+
+if (hasProperty('bintrayUsername') || System.getenv().containsKey('BINTRAY_USER')) {
+    // Used by the bintray plugin
+    bintray {
+        user = System.getenv().getOrDefault('BINTRAY_USER', bintrayUsername)
+        key  = System.getenv().getOrDefault('BINTRAY_KEY', bintrayApiKey)
+        publish = true
+
+        pkg {
+            repo = 'maven'
+            name = projectName
+            licenses = ['MIT']
+            vcsUrl = 'https://github.com/rafaskb/typing-label.git'
+
+            version {
+                name = project.version
+                desc = projectDescription
+                released = new Date()
+
+                mavenCentralSync {
+                    user     = System.getenv().getOrDefault('SONATYPE_USER', nexusUsername)
+                    password = System.getenv().getOrDefault('SONATYPE_PASSWORD', nexusPassword)
+                }
+            }
+        }
+
+        configurations = ['archives']
+    }
+}
