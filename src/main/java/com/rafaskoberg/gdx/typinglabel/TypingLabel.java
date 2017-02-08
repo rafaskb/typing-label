@@ -316,8 +316,9 @@ public class TypingLabel extends Label {
 		while (skipping || charCooldown < 0.0f) {
 			rawCharIndex++;
 
-			// If char progression is finished, notify listener and abort routine
-			if (rawCharIndex > getText().length) {
+			// If char progression is finished, or if text is empty, notify listener and abort routine
+			int textLen = getText().length;
+			if (textLen == 0 || rawCharIndex > textLen) {
 				if (listener != null) listener.end();
 				ended = true;
 				return;
