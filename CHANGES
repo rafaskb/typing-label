@@ -1,0 +1,10 @@
+[1.0.1]
+- Added option to ignore events and effects while skipping to the end.
+- Fixed exception being thrown when the text reached the end.
+- Fixed {WAIT} tokens pausing the text one glyph ahead its position.
+- Fixed TypingLabel.end() being called too many times.
+- Forced all labels to calculate their full layouts. This fixes a bug causing one-line labels to not being rendered at all.
+- Fixed error when creating an empty label.
+
+[1.0.0]
+- Initial code
