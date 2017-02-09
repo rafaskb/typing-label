@@ -16,7 +16,7 @@ apply plugin: 'com.jfrog.bintray'
 
 sourceCompatibility = 1.7
 
-version '1.0.0'
+version '1.0.1'
 group 'com.rafaskoberg.gdx'
 def projectName = 'typing-label'
 def projectDescription = 'A libGDX Label that appears as if it was being typed in real time.'
