@@ -318,9 +318,11 @@ public class TypingLabel extends Label {
 
 			// If char progression is finished, or if text is empty, notify listener and abort routine
 			int textLen = getText().length;
-			if (textLen == 0 || rawCharIndex > textLen) {
-				if (listener != null) listener.end();
-				ended = true;
+			if (textLen == 0 || rawCharIndex >= textLen) {
+				if (!ended) {
+					if (listener != null) listener.end();
+					ended = true;
+				}
 				return;
 			}
 
