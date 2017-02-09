@@ -49,6 +49,7 @@ public class TypingLabel extends Label {
 	private float charCooldown = textSpeed;
 	private int rawCharIndex = -1; // All chars, including color codes
 	private int glyphCharIndex = -1; // Only renderable chars, excludes color codes
+	private int glyphCharCompensation = 0;
 	private int cachedGlyphCharIndex = -1; // Last glyphCharIndex sent to the cache
 	private float lastLayoutX = 0, lastLayoutY = 0;
 	private boolean parsed = false;
@@ -209,6 +210,7 @@ public class TypingLabel extends Label {
 		charCooldown = textSpeed;
 		rawCharIndex = -1;
 		glyphCharIndex = -1;
+		glyphCharCompensation = 0;
 		cachedGlyphCharIndex = -1;
 		lastLayoutX = 0;
 		lastLayoutY = 0;
@@ -314,7 +316,25 @@ public class TypingLabel extends Label {
 
 		// Process chars while there's room for it
 		while (skipping || charCooldown < 0.0f) {
+			// Apply compensation to glyph index, if any
+			if (glyphCharCompensation > 0) {
+				glyphCharIndex++;
+				glyphCharCompensation--;
+
+				// Increment cooldown and wait for it
+				charCooldown += textSpeed;
+				continue;
+			}
+
+			// Increase raw char index
 			rawCharIndex++;
+
+			// Get next character and calculate cooldown increment
+			int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length);
+			char primitiveChar = getText().charAt(safeIndex);
+			Character ch = Character.valueOf(primitiveChar);
+			float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
+			charCooldown += textSpeed * intervalMultiplier;
 
 			// If char progression is finished, or if text is empty, notify listener and abort routine
 			int textLen = getText().length;
@@ -326,13 +346,6 @@ public class TypingLabel extends Label {
 				return;
 			}
 
-			// Get next character and calculate cooldown increment
-			int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length);
-			char primitiveChar = getText().charAt(safeIndex);
-			Character ch = Character.valueOf(primitiveChar);
-			float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
-			charCooldown += textSpeed * intervalMultiplier;
-
 			// Increase glyph char index for all characters, except new lines.
 			if (primitiveChar != '\n') glyphCharIndex++;
 
@@ -341,6 +354,8 @@ public class TypingLabel extends Label {
 				TokenEntry entry = tokenEntries.pop();
 				switch (entry.token) {
 				case WAIT:
+					glyphCharIndex--;
+					glyphCharCompensation++;
 					charCooldown += entry.floatValue;
 					break;
 
