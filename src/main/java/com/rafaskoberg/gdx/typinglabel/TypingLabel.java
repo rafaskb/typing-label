@@ -56,6 +56,8 @@ public class TypingLabel extends Label {
 	private boolean paused = false;
 	private boolean ended = false;
 	private boolean skipping = false;
+	private boolean ignoringEvents = false;
+	private boolean ignoringEffects = false;
 
 	// Superclass mirroring
 	boolean wrap;
@@ -165,9 +167,25 @@ public class TypingLabel extends Label {
 		parsed = true;
 	}
 
-	/** Skips the char progression to the end, showing the entire label. Useful for when users don't want to wait for too long. */
+	/** Skips the char progression to the end, showing the entire label. Useful for when users don't want to wait for too long.
+	 * Ignores all subsequent events by default. */
 	public void skipToTheEnd () {
+		skipToTheEnd(true);
+	}
+
+	/** Skips the char progression to the end, showing the entire label. Useful for when users don't want to wait for too long.
+	 * @param ignoreEvents If {@code true}, skipped events won't be reported to the listener. */
+	public void skipToTheEnd (boolean ignoreEvents) {
+		skipToTheEnd(ignoreEvents, false);
+	}
+
+	/** Skips the char progression to the end, showing the entire label. Useful for when users don't want to wait for too long.
+	 * @param ignoreEvents If {@code true}, skipped events won't be reported to the listener.
+	 * @param ignoreEffects If {@code true}, all text effects will be instantly cancelled. */
+	public void skipToTheEnd (boolean ignoreEvents, boolean ignoreEffects) {
 		skipping = true;
+		ignoringEvents = ignoreEvents;
+		ignoringEffects = ignoreEffects;
 	}
 
 	/** Returns whether or not this label is paused. */
@@ -218,6 +236,8 @@ public class TypingLabel extends Label {
 		paused = false;
 		ended = false;
 		skipping = false;
+		ignoringEvents = false;
+		ignoringEffects = false;
 
 		// Set new text
 		this.setText(newText);
@@ -289,22 +309,24 @@ public class TypingLabel extends Label {
 		}
 
 		// Apply effects
-		for (int i = activeEffects.size - 1; i >= 0; i--) {
-			Effect effect = activeEffects.get(i);
-			effect.update(delta);
-			int start = effect.indexStart;
-			int end = effect.indexEnd >= 0 ? effect.indexEnd : glyphCharIndex;
+		if (!ignoringEffects) {
+			for (int i = activeEffects.size - 1; i >= 0; i--) {
+				Effect effect = activeEffects.get(i);
+				effect.update(delta);
+				int start = effect.indexStart;
+				int end = effect.indexEnd >= 0 ? effect.indexEnd : glyphCharIndex;
 
-			// If effect is finished, remove it
-			if (effect.isFinished()) {
-				activeEffects.removeIndex(i);
-				continue;
-			}
+				// If effect is finished, remove it
+				if (effect.isFinished()) {
+					activeEffects.removeIndex(i);
+					continue;
+				}
 
-			// Apply effect to glyph
-			for (int j = start; j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
-				Glyph glyph = glyphCache.get(j);
-				effect.apply(glyph, j);
+				// Apply effect to glyph
+				for (int j = start; j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
+					Glyph glyph = glyphCache.get(j);
+					effect.apply(glyph, j);
+				}
 			}
 		}
 	}
@@ -375,7 +397,7 @@ public class TypingLabel extends Label {
 					break;
 
 				case EVENT:
-					if (this.listener != null) {
+					if (this.listener != null && !ignoringEvents) {
 						listener.event(entry.stringValue);
 					}
 					break;
