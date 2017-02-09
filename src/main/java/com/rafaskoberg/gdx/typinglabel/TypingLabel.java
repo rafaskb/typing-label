@@ -330,7 +330,7 @@ public class TypingLabel extends Label {
 			rawCharIndex++;
 
 			// Get next character and calculate cooldown increment
-			int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length);
+			int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length - 1);
 			char primitiveChar = getText().charAt(safeIndex);
 			Character ch = Character.valueOf(primitiveChar);
 			float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
