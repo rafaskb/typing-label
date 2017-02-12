@@ -7,7 +7,7 @@ A libGDX Label that appears as if it was being typed in real time.
 
 It works as a drop-in replacement for normal [Scene2D Labels](https://github.com/libgdx/libgdx/wiki/Scene2d.ui#label), and you can use optional [tokens](https://github.com/rafaskb/typing-label/wiki/Tokens) to customize the text's behavior.
 
-<!-- GIF -->
+![Sample GIF](media/sample.gif)
 
 ## Installation
 
