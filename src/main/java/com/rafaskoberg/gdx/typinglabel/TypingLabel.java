@@ -362,8 +362,8 @@ public class TypingLabel extends Label {
 			int textLen = getText().length;
 			if (textLen == 0 || rawCharIndex >= textLen) {
 				if (!ended) {
-					if (listener != null) listener.end();
 					ended = true;
+					if (listener != null) listener.end();
 				}
 				return;
 			}

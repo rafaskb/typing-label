@@ -1,3 +1,6 @@
+[1.0.2]
+- Fixed bug causing restart() to not actually restart the text when called from end().
+
 [1.0.1]
 - Added option to ignore events and effects while skipping to the end.
 - Fixed exception being thrown when the text reached the end.
