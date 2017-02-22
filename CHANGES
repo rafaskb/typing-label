@@ -1,5 +1,6 @@
 [1.0.2]
-- Fixed bug causing restart() to not actually restart the text when called from end().
+- Added a way to replace variables through a listener method, instead of having to provide fixed values.
+- Fixed bug causing restart() to not actually restart the text when called from listener.end().
 
 [1.0.1]
 - Added option to ignore events and effects while skipping to the end.

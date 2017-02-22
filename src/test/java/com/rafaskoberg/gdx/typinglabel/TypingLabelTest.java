@@ -136,14 +136,11 @@ public class TypingLabelTest extends ApplicationAdapter {
 		// Create label
 		final TypingLabel label = new TypingLabel(text, skin);
 
-		// Set variable replacements for the {VARIABLE} token
+		// Set variable replacements for the {VAR} token
 		label.setVariable("title", "curious human");
 
-		// Finally parse tokens in the label text.
-		label.parseTokens();
-
 		// Set an event listener for when the {EVENT} token is reached and for the char progression ends.
-		label.setTypingListener(new TypingListener() {
+		label.setTypingListener(new TypingAdapter() {
 			@Override
 			public void event (String event) {
 				System.out.println("Event: " + event);
@@ -177,6 +174,9 @@ public class TypingLabelTest extends ApplicationAdapter {
 				Timer.schedule(autoRestartTask, 3f);
 			}
 		});
+
+		// Finally parse tokens in the label text.
+		label.parseTokens();
 
 		return label;
 	}

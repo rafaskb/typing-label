@@ -81,8 +81,21 @@ class Parser {
 				if (hasMarkup) replacement = "[#" + label.getClearColor().toString() + "]";
 				break;
 			case VAR:
-				String variable = param.toUpperCase();
-				replacement = label.getVariables().get(variable, variable);
+				String variable = param;
+
+				// Try to replace variable through listener.
+				if (label.getTypingListener() != null) {
+					replacement = label.getTypingListener().replaceVariable(variable);
+				}
+
+				// If replacement is null, get value from maps.
+				if (replacement == null) {
+					variable = variable.toUpperCase();
+					replacement = label.getVariables().get(variable, variable);
+				}
+				
+				// Make sure we're not inserting "null" to the text.
+				if(replacement == null) replacement = "";
 				break;
 			case RESET:
 				replacement = RESET_REPLACEMENT;

@@ -12,4 +12,9 @@ public class TypingAdapter implements TypingListener {
 	public void end () {
 	}
 
+	@Override
+	public String replaceVariable (String variable) {
+		return null;
+	}
+
 }
