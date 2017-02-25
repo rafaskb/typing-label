@@ -323,7 +323,7 @@ public class TypingLabel extends Label {
 				}
 
 				// Apply effect to glyph
-				for (int j = start; j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
+				for (int j = Math.max(0, start); j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
 					Glyph glyph = glyphCache.get(j);
 					effect.apply(glyph, j);
 				}
@@ -414,7 +414,7 @@ public class TypingLabel extends Label {
 						Effect effect = activeEffects.get(i);
 						if (effect.indexEnd < 0) {
 							if (effect instanceof ShakeEffect) {
-								effect.indexEnd = glyphCharIndex;
+								effect.indexEnd = glyphCharIndex - 1;
 							}
 						}
 					}
@@ -425,7 +425,7 @@ public class TypingLabel extends Label {
 						Effect effect = activeEffects.get(i);
 						if (effect.indexEnd < 0) {
 							if (effect instanceof WaveEffect) {
-								effect.indexEnd = glyphCharIndex;
+								effect.indexEnd = glyphCharIndex - 1;
 							}
 						}
 					}
@@ -436,7 +436,7 @@ public class TypingLabel extends Label {
 						Effect effect = activeEffects.get(i);
 						if (effect.indexEnd < 0) {
 							if (effect instanceof JumpEffect) {
-								effect.indexEnd = glyphCharIndex;
+								effect.indexEnd = glyphCharIndex - 1;
 							}
 						}
 					}
