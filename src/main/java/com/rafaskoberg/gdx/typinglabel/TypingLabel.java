@@ -374,76 +374,76 @@ public class TypingLabel extends Label {
 			// Process tokens according to the current index
 			while (tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex) {
 				TokenEntry entry = tokenEntries.pop();
-				switch (entry.token) {
-				case WAIT:
+				Token token = entry.token;
+
+				// Speed
+				if (token.isSpeed()) {
+					textSpeed = entry.floatValue;
+					continue;
+				}
+
+				// Wait
+				if (token == Token.WAIT) {
 					glyphCharIndex--;
 					glyphCharCompensation++;
 					charCooldown += entry.floatValue;
-					break;
+					continue;
+				}
 
-				case FASTER:
-				case FAST:
-				case NORMAL:
-				case SLOW:
-				case SLOWER:
-				case SPEED:
-					textSpeed = entry.floatValue;
-					break;
-
-				case SKIP:
+				// Skip
+				if (token == Token.SKIP) {
 					if (entry.stringValue != null) {
 						rawCharIndex += entry.stringValue.length();
 					}
-					break;
+					continue;
+				}
 
-				case EVENT:
+				// Event
+				if (token == Token.EVENT) {
 					if (this.listener != null && !ignoringEvents) {
 						listener.event(entry.stringValue);
 					}
-					break;
+					continue;
+				}
 
-				case SHAKE:
-				case WAVE:
-				case JUMP:
-					entry.effect.indexStart = glyphCharIndex;
-					activeEffects.add(entry.effect);
-					break;
+				// Effects
+				if (token.isEffect()) {
+					// Get effect class
+					Class<? extends Effect> effectClass = null;
+					switch (token) {
+					case SHAKE:
+					case ENDSHAKE:
+						effectClass = ShakeEffect.class;
+						break;
+					case WAVE:
+					case ENDWAVE:
+						effectClass = WaveEffect.class;
+						break;
+					case JUMP:
+					case ENDJUMP:
+						effectClass = JumpEffect.class;
+						break;
+					default:
+						break;
+					}
 
-				case ENDSHAKE:
+					// End all effects of the same type
 					for (int i = 0; i < activeEffects.size; i++) {
 						Effect effect = activeEffects.get(i);
 						if (effect.indexEnd < 0) {
-							if (effect instanceof ShakeEffect) {
+							if (effectClass.isAssignableFrom(effect.getClass())) {
 								effect.indexEnd = glyphCharIndex - 1;
 							}
 						}
 					}
-					break;
 
-				case ENDWAVE:
-					for (int i = 0; i < activeEffects.size; i++) {
-						Effect effect = activeEffects.get(i);
-						if (effect.indexEnd < 0) {
-							if (effect instanceof WaveEffect) {
-								effect.indexEnd = glyphCharIndex - 1;
-							}
-						}
+					// Create new effect if necessary
+					if (token.isEffectStart()) {
+						entry.effect.indexStart = glyphCharIndex;
+						activeEffects.add(entry.effect);
 					}
-					break;
 
-				case ENDJUMP:
-					for (int i = 0; i < activeEffects.size; i++) {
-						Effect effect = activeEffects.get(i);
-						if (effect.indexEnd < 0) {
-							if (effect instanceof JumpEffect) {
-								effect.indexEnd = glyphCharIndex - 1;
-							}
-						}
-					}
-					break;
-
-				default:
-					break;
+					continue;
 				}
 			}
 
