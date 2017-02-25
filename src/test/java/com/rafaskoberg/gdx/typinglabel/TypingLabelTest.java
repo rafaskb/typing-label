@@ -119,14 +119,11 @@ public class TypingLabelTest extends ApplicationAdapter {
 			.append("{SLOWER}{COLOR=SCARLET}{WAVE} Welcome,{WAIT} {VAR=title}!{ENDWAVE}")
 			.append("{FAST}\n\n")
 			.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you")
-			.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}")
-			.append("{NORMAL}\n")
+			.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}")
 			.append("{NORMAL}{CLEARCOLOR} With this library you can control the flow of the text with")
 			.append("{COLOR=#ff0000} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}")
-			.append("{NORMAL}\n")
 			.append("{SPEED=2.50}{COLOR=LIME} making the text go really fast{WAIT}")
-			.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow{ENDWAVE}.")
-			.append("{NORMAL}\n")
+			.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow.{ENDWAVE}")
 			.append("{RESET} You can also wait for a {SHAKE=1;2;2}second{ENDSHAKE}{WAIT=1} {SHAKE=1;2;3}or two{ENDSHAKE}{WAIT=2},")
 			.append("{COLOR=LIME} just to catch an event in code{EVENT=sample}!{WAIT}")
 			.append("{NORMAL}\n\n")
@@ -135,6 +132,9 @@ public class TypingLabelTest extends ApplicationAdapter {
 
 		// Create label
 		final TypingLabel label = new TypingLabel(text, skin);
+
+		// Make the label wrap to new lines, respecting the table's layout.
+		label.setWrap(true);
 
 		// Set variable replacements for the {VAR} token
 		label.setVariable("title", "curious human");
