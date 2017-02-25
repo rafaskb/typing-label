@@ -143,6 +143,7 @@ class Parser {
 			final String[] params = paramsString == null ? new String[0] : paramsString.split(";");
 			final String firstParam = params.length > 0 ? params[0] : null;
 			final int index = m.start(0);
+			int indexOffset = 0;
 
 			// If token couldn't be parsed, move one index forward to continue the search
 			if (token == null) {
@@ -183,6 +184,7 @@ class Parser {
 
 			case EVENT:
 				stringValue = paramsString;
+				indexOffset = -1;
 				break;
 
 			case SHAKE:
@@ -246,7 +248,7 @@ class Parser {
 			}
 
 			// Register token
-			TokenEntry entry = new TokenEntry(token, index, floatValue, stringValue);
+			TokenEntry entry = new TokenEntry(token, index + indexOffset, floatValue, stringValue);
 			entry.effect = effect;
 			label.tokenEntries.add(entry);
 

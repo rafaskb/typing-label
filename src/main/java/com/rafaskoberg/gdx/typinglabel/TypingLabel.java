@@ -47,7 +47,7 @@ public class TypingLabel extends Label {
 	private final Array<Effect> activeEffects = new Array<Effect>();
 	private float textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 	private float charCooldown = textSpeed;
-	private int rawCharIndex = -1; // All chars, including color codes
+	private int rawCharIndex = -2; // All chars, including color codes
 	private int glyphCharIndex = -1; // Only renderable chars, excludes color codes
 	private int glyphCharCompensation = 0;
 	private int cachedGlyphCharIndex = -1; // Last glyphCharIndex sent to the cache
@@ -226,7 +226,7 @@ public class TypingLabel extends Label {
 		// Reset state
 		textSpeed = TypingConfig.DEFAULT_SPEED_PER_CHAR;
 		charCooldown = textSpeed;
-		rawCharIndex = -1;
+		rawCharIndex = -2;
 		glyphCharIndex = -1;
 		glyphCharCompensation = 0;
 		cachedGlyphCharIndex = -1;
@@ -369,7 +369,7 @@ public class TypingLabel extends Label {
 			}
 
 			// Increase glyph char index for all characters, except new lines.
-			if (primitiveChar != '\n') glyphCharIndex++;
+			if (rawCharIndex >= 0 && primitiveChar != '\n') glyphCharIndex++;
 
 			// Process tokens according to the current index
 			while (tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex) {
