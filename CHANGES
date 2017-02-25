@@ -1,6 +1,11 @@
 [1.0.2]
 - Added a way to replace variables through a listener method, instead of having to provide fixed values.
+- Effect tokens now end previous effects of the same type, to prevent similar effects to stack.
+- Dispose cached glyphs when label is removed from its parent.
 - Fixed bug causing restart() to not actually restart the text when called from listener.end().
+- Fixed bug causing weird effects to glyphs, especially on wrapped labels.
+- Fixed text effects ending at the wrong character.
+- Fixed events being fired at the wrong character.
 
 [1.0.1]
 - Added option to ignore events and effects while skipping to the end.
