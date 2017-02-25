@@ -591,6 +591,7 @@ public class TypingLabel extends Label {
 
 		// Perform cache layout operation, where the magic happens
 		GlyphUtils.freeAll(glyphCache);
+		glyphCache.clear();
 		layoutCache();
 	}
 
