@@ -457,6 +457,13 @@ public class TypingLabel extends Label {
 		}
 	}
 
+	@Override
+	public boolean remove () {
+		GlyphUtils.freeAll(glyphCache);
+		glyphCache.clear();
+		return super.remove();
+	}
+
 	////////////////////////////////////
 	/// --- Superclass Mirroring --- ///
 	////////////////////////////////////
