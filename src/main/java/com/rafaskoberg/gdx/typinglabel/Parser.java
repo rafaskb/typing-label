@@ -93,9 +93,9 @@ class Parser {
 					variable = variable.toUpperCase();
 					replacement = label.getVariables().get(variable, variable);
 				}
-				
+
 				// Make sure we're not inserting "null" to the text.
-				if(replacement == null) replacement = "";
+				if (replacement == null) replacement = "";
 				break;
 			case RESET:
 				replacement = RESET_REPLACEMENT;
