@@ -1,4 +1,5 @@
 [Unreleased]
+- API Addition: Notify listener about character progression through the method onChar(Character).
 - Fixed variables not being replaced without having a listener set.
 - Fixed exception when using null as text.
 

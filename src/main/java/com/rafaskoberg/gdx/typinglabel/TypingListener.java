@@ -25,4 +25,8 @@ public interface TypingListener {
 	 * @see TypingLabel#setVariables(com.badlogic.gdx.utils.ObjectMap) */
 	public String replaceVariable (String variable);
 
+	/** Called when a new character is displayed. May be called many times per frame depending on the label configurations and text
+	 * speed. Useful to do a certain action each time a character is displayed, like playing a sound effect. */
+	public void onChar (Character ch);
+
 }

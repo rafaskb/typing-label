@@ -366,6 +366,7 @@ public class TypingLabel extends Label {
 			if (textLen == 0 || rawCharIndex >= textLen) {
 				if (!ended) {
 					ended = true;
+					skipping = false;
 					if (listener != null) listener.end();
 				}
 				return;
@@ -447,6 +448,16 @@ public class TypingLabel extends Label {
 					}
 
 					continue;
+				}
+			}
+
+			// Notify listener about char progression
+			if (listener != null) {
+				if (rawCharIndex > 0) {
+					int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
+					char nextPrimitiveChar = getText().charAt(nextIndex);
+					Character nextChar = Character.valueOf(nextPrimitiveChar);
+					listener.onChar(nextChar);
 				}
 			}
 
