@@ -1,5 +1,6 @@
 [Unreleased]
 - API Addition: Notify listener about character progression through the method onChar(Character).
+- API Addition: Added cancelSkipping(), which can be called during events after skipToTheEnd() is called.
 - Fixed variables not being replaced without having a listener set.
 - Fixed exception when using null as text.
 

@@ -188,6 +188,16 @@ public class TypingLabel extends Label {
 		ignoringEffects = ignoreEffects;
 	}
 
+	/** Cancels calls to {@link #skipToTheEnd()}. Useful if you need to restore the label's normal behavior at some event after
+	 * skipping. */
+	public void cancelSkipping () {
+		if (skipping) {
+			skipping = false;
+			ignoringEvents = false;
+			ignoringEffects = false;
+		}
+	}
+
 	/** Returns whether or not this label is paused. */
 	public boolean isPaused () {
 		return paused;
