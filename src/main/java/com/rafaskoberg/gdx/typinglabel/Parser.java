@@ -82,6 +82,7 @@ class Parser {
 				break;
 			case VAR:
 				String variable = param;
+				replacement = null;
 
 				// Try to replace variable through listener.
 				if (label.getTypingListener() != null) {
