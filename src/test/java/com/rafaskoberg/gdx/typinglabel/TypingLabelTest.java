@@ -19,8 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class TypingLabelTest extends ApplicationAdapter {
@@ -163,15 +161,6 @@ public class TypingLabelTest extends ApplicationAdapter {
 			@Override
 			public void end () {
 				System.out.println("End");
-
-				// Char progression ended, wait 2 seconds and restart label
-				Task autoRestartTask = new Task() {
-					@Override
-					public void run () {
-						label.restart();
-					}
-				};
-				Timer.schedule(autoRestartTask, 3f);
 			}
 		});
 
