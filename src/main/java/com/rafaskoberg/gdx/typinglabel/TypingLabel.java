@@ -353,10 +353,13 @@ public class TypingLabel extends Label {
 
 			// Get next character and calculate cooldown increment
 			int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length - 1);
-			char primitiveChar = getText().charAt(safeIndex);
-			Character ch = Character.valueOf(primitiveChar);
-			float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
-			charCooldown += textSpeed * intervalMultiplier;
+			char primitiveChar = '\u0000'; // Null character by default
+			if (getText().length > 0) {
+				primitiveChar = getText().charAt(safeIndex);
+				Character ch = Character.valueOf(primitiveChar);
+				float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
+				charCooldown += textSpeed * intervalMultiplier;
+			}
 
 			// If char progression is finished, or if text is empty, notify listener and abort routine
 			int textLen = getText().length;

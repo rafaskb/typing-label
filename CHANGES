@@ -1,5 +1,6 @@
 [Unreleased]
 - Fixed variables not being replaced without having a listener set.
+- Fixed exception when using null as text.
 
 [1.0.2]
 - Added a way to replace variables through a listener method, instead of having to provide fixed values.
