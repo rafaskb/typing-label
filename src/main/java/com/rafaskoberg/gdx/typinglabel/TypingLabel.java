@@ -692,11 +692,11 @@ public class TypingLabel extends Label {
 			}
 
 			for (int j = 0; j < glyphs.size; j++) {
-				glyphCountdown--;
 				if (glyphCountdown < 0) {
 					glyphs.removeRange(j, glyphs.size - 1);
 					break;
 				}
+				glyphCountdown--;
 			}
 		}
 
