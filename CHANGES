@@ -1,3 +1,6 @@
+[1.0.4]
+- Fixed bug causing last glyph to be rendered as the first one in some cases.
+
 [1.0.3]
 - API Addition: Notify listener about character progression through the method onChar(Character).
 - API Addition: Added cancelSkipping(), which can be called during events after skipToTheEnd() is called.

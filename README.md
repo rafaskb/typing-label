@@ -17,14 +17,14 @@ TypingLabel is available in Maven Central. Add the following dependency to your 
 <dependency>
   <groupId>com.rafaskoberg.gdx</groupId>
   <artifactId>typing-label</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
 If you use Gradle, add the following dependency to your build.gradle file, in the dependencies block of the core project:
 
 ```groovy
-compile "com.rafaskoberg.gdx:typing-label:1.0.3"
+compile "com.rafaskoberg.gdx:typing-label:1.0.4"
 ```
 
 Alternatively you can download the source [as a zip](https://github.com/RafaSKB/typing-label/archive/master.zip) and copy the contents of `typing-label/src` into your project.
