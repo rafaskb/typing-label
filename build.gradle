@@ -21,7 +21,7 @@ group 'com.rafaskoberg.gdx'
 def projectName = 'typing-label'
 def projectDescription = 'A libGDX Label that appears as if it was being typed in real time.'
 
-def gdxVersion = '1.9.5'
+def gdxVersion = '1.9.6'
 
 // Disable JDK 8's doclint
 // http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
