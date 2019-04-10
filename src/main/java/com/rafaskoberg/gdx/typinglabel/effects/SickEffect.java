@@ -16,8 +16,7 @@ public class SickEffect extends Effect {
 	public float frequency = 1; // How frequently the wave pattern repeats
 	public float intensity = 1; // How fast the glyphs should move
 
-	public IntArray indices = new IntArray();
-
+    private IntArray indices = new IntArray();
 
 	public SickEffect(TypingLabel label) {
 		super(label);
@@ -65,7 +64,6 @@ public class SickEffect extends Effect {
 
 		// Apply changes
 		glyph.yoffset -= y;
-
 	}
 
 }
