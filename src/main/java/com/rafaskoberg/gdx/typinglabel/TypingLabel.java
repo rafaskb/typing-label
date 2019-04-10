@@ -451,7 +451,7 @@ public class TypingLabel extends Label {
 					for (int i = 0; i < activeEffects.size; i++) {
 						Effect effect = activeEffects.get(i);
 						if (effect.indexEnd < 0) {
-							if (ClassReflection.isAssignableFrom(effectClass.getClass(), effect.getClass())) {
+							if (ClassReflection.isAssignableFrom(effectClass, effect.getClass())) {
 								effect.indexEnd = glyphCharIndex - 1;
 							}
 						}
