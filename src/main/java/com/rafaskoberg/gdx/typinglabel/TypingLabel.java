@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.rafaskoberg.gdx.typinglabel.effects.*;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the use of
  * tokens in the following format: <tt>{TOKEN=PARAMETER}</tt>. */
@@ -25,8 +26,8 @@ public class TypingLabel extends Label {
 	///////////////////////
 
 	// Collections
-	private final ObjectMap<String, String> variables = new ObjectMap<>();
-	protected final Array<TokenEntry> tokenEntries = new Array<>();
+	private final ObjectMap<String, String> variables = new ObjectMap<String, String>();
+	protected final Array<TokenEntry> tokenEntries = new Array<TokenEntry>();
 
 	// Config
 	private Color clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
@@ -443,7 +444,7 @@ public class TypingLabel extends Label {
 					for (int i = 0; i < activeEffects.size; i++) {
 						Effect effect = activeEffects.get(i);
 						if (effect.indexEnd < 0) {
-							if (effectClass.isAssignableFrom(effect.getClass())) {
+							if (ClassReflection.isAssignableFrom(effectClass.getClass(), effect.getClass())) {
 								effect.indexEnd = glyphCharIndex - 1;
 							}
 						}
