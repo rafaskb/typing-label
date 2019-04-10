@@ -20,8 +20,8 @@ enum Token {
 	// Effects
 	SHAKE         ("SHAKE"),
 	ENDSHAKE      ("ENDSHAKE"),
-	SICK		  ("SICK"),
-	ENDSICK		  ("ENDSICK"),
+	SICK          ("SICK"),
+	ENDSICK       ("ENDSICK"),
 	WAVE          ("WAVE"),
 	ENDWAVE       ("ENDWAVE"),
 	JUMP          ("JUMP"),

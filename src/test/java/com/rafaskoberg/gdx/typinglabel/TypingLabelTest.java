@@ -1,5 +1,6 @@
-
 package com.rafaskoberg.gdx.typinglabel;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -18,8 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class TypingLabelTest extends ApplicationAdapter {
 	Skin skin;
@@ -114,18 +113,18 @@ public class TypingLabelTest extends ApplicationAdapter {
 		// Create text with tokens
 		// @off
 		final StringBuilder text = new StringBuilder()
-				.append("{SLOWER}{COLOR=SCARLET}{WAVE} Welcome,{WAIT} {VAR=title}!{ENDWAVE}")
-				.append("{FAST}\n\n")
-				.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you")
-				.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}")
-				.append("{NORMAL}{CLEARCOLOR}{SICK} With this library{ENDSICK} you can control the flow of the text with")
-				.append("{COLOR=#ff0000} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}")
-				.append("{SPEED=2.50}{COLOR=LIME} making the text go really fast{WAIT}")
-				.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow.{ENDWAVE}")
-				.append("{RESET} You can also wait for a {SHAKE=1;2;2}second{ENDSHAKE}{WAIT=1} {SHAKE=1;2;3}or two{ENDSHAKE}{WAIT=2},")
-				.append("{COLOR=LIME} just to catch an event in code{EVENT=sample}!{WAIT}")
-				.append("{NORMAL}\n\n")
-				.append("{COLOR=GOLDENROD}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
+			.append("{SLOWER}{COLOR=SCARLET}{WAVE} Welcome,{WAIT} {VAR=title}!{ENDWAVE}")
+			.append("{FAST}\n\n")
+			.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you")
+			.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}")
+			.append("{NORMAL}{CLEARCOLOR}{SICK} With this library{ENDSICK} you can control the flow of the text with")
+			.append("{COLOR=#ff0000} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}")
+			.append("{SPEED=2.50}{COLOR=LIME} making the text go really fast{WAIT}")
+			.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow.{ENDWAVE}")
+			.append("{RESET} You can also wait for a {SHAKE=1;2;2}second{ENDSHAKE}{WAIT=1} {SHAKE=1;2;3}or two{ENDSHAKE}{WAIT=2},")
+			.append("{COLOR=LIME} just to catch an event in code{EVENT=sample}!{WAIT}")
+			.append("{NORMAL}\n\n")
+			.append("{COLOR=GOLDENROD}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
 		// @on
 
 		// Create label

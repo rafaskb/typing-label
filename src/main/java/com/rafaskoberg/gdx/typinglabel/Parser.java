@@ -1,11 +1,15 @@
 
 package com.rafaskoberg.gdx.typinglabel;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.rafaskoberg.gdx.typinglabel.effects.*;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.rafaskoberg.gdx.typinglabel.effects.Effect;
+import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {

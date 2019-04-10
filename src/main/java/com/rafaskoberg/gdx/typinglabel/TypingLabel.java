@@ -12,11 +12,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.rafaskoberg.gdx.typinglabel.effects.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.rafaskoberg.gdx.typinglabel.effects.Effect;
+import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /** An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the use of
  * tokens in the following format: <tt>{TOKEN=PARAMETER}</tt>. */
