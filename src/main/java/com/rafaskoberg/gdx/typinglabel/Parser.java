@@ -1,14 +1,11 @@
 
 package com.rafaskoberg.gdx.typinglabel;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.rafaskoberg.gdx.typinglabel.effects.*;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.badlogic.gdx.math.MathUtils;
-import com.rafaskoberg.gdx.typinglabel.effects.Effect;
-import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
@@ -204,6 +201,22 @@ class Parser {
 			case ENDSHAKE:
 				break;
 
+			case SICK:
+				// distance;intensity;duration
+				effect = new SickEffect(label);
+				if (params.length > 0) {
+					((SickEffect)effect).distance = stringToFloat(params[0], 1);
+				}
+				if (params.length > 1) {
+					((SickEffect)effect).intensity = stringToFloat(params[1], 1);
+				}
+				if (params.length > 2) {
+					((SickEffect)effect).duration = stringToFloat(params[2], -1);
+				}
+				break;
+			case ENDSICK:
+				break;
+
 			case WAVE:
 				// distance;frequency;intensity;duration
 				effect = new WaveEffect(label);
@@ -312,7 +325,7 @@ class Parser {
 
 	/** Returns the replacement string intended to be used on {RESET} tokens. */
 	private static String getResetReplacement () {
-		Token[] tokens = {Token.CLEARCOLOR, Token.NORMAL, Token.ENDJUMP, Token.ENDSHAKE, Token.ENDWAVE};
+		Token[] tokens = {Token.CLEARCOLOR, Token.NORMAL, Token.ENDJUMP, Token.ENDSHAKE, Token.ENDSICK, Token.ENDWAVE};
 
 		StringBuilder sb = new StringBuilder();
 		for (Token token : tokens) {

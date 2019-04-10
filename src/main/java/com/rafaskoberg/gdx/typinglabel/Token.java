@@ -20,6 +20,8 @@ enum Token {
 	// Effects
 	SHAKE         ("SHAKE"),
 	ENDSHAKE      ("ENDSHAKE"),
+	SICK		  ("SICK"),
+	ENDSICK		  ("ENDSICK"),
 	WAVE          ("WAVE"),
 	ENDWAVE       ("ENDWAVE"),
 	JUMP          ("JUMP"),
@@ -60,6 +62,8 @@ enum Token {
 		switch (this) {
 		case JUMP:
 		case ENDJUMP:
+		case SICK:
+		case ENDSICK:
 		case SHAKE:
 		case ENDSHAKE:
 		case WAVE:
@@ -75,6 +79,7 @@ enum Token {
 		switch (this) {
 		case JUMP:
 		case SHAKE:
+		case SICK:
 		case WAVE:
 			return true;
 		default:
