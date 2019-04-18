@@ -248,7 +248,7 @@ class Parser {
                         ((EaseEffect) effect).distance = stringToFloat(params[0], 1);
                     }
                     if(params.length > 1) {
-                        ((EaseEffect) effect).intensity = stringToFloat(params[2], 1);
+                        ((EaseEffect) effect).intensity = stringToFloat(params[1], 1);
                     }
                     break;
                 case ENDEASE:
