@@ -2,6 +2,7 @@
 package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.Effect;
 import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
@@ -240,6 +241,19 @@ class Parser {
                 case ENDWAVE:
                     break;
 
+                case EASE:
+                    // distance;intensity
+                    effect = new EaseEffect(label);
+                    if(params.length > 0) {
+                        ((EaseEffect) effect).distance = stringToFloat(params[0], 1);
+                    }
+                    if(params.length > 1) {
+                        ((EaseEffect) effect).intensity = stringToFloat(params[2], 1);
+                    }
+                    break;
+                case ENDEASE:
+                    break;
+
                 case JUMP:
                     // distance;frequency;intensity;duration
                     effect = new JumpEffect(label);
@@ -331,7 +345,7 @@ class Parser {
 
     /** Returns the replacement string intended to be used on {RESET} tokens. */
     private static String getResetReplacement() {
-        Token[] tokens = {Token.CLEARCOLOR, Token.NORMAL, Token.ENDJUMP, Token.ENDSHAKE, Token.ENDSICK, Token.ENDWAVE};
+        Token[] tokens = {Token.CLEARCOLOR, Token.NORMAL, Token.ENDJUMP, Token.ENDSHAKE, Token.ENDSICK, Token.ENDWAVE, Token.ENDEASE};
 
         StringBuilder sb = new StringBuilder();
         for(Token token : tokens) {

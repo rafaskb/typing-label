@@ -24,6 +24,8 @@ enum Token {
 	ENDSICK       ("ENDSICK"),
 	WAVE          ("WAVE"),
 	ENDWAVE       ("ENDWAVE"),
+	EASE          ("EASE"),
+	ENDEASE       ("ENDEASE"),
 	JUMP          ("JUMP"),
 	ENDJUMP       ("ENDJUMP"),
 
@@ -68,6 +70,8 @@ enum Token {
             case ENDSHAKE:
             case WAVE:
             case ENDWAVE:
+            case EASE:
+            case ENDEASE:
                 return true;
             default:
                 return false;
@@ -81,6 +85,7 @@ enum Token {
             case SHAKE:
             case SICK:
             case WAVE:
+            case EASE:
                 return true;
             default:
                 return false;

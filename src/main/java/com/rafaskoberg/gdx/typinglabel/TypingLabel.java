@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.Effect;
 import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
@@ -472,6 +473,10 @@ public class TypingLabel extends Label {
                         case WAVE:
                         case ENDWAVE:
                             effectClass = WaveEffect.class;
+                            break;
+                        case EASE:
+                        case ENDEASE:
+                            effectClass = EaseEffect.class;
                             break;
                         case JUMP:
                         case ENDJUMP:
