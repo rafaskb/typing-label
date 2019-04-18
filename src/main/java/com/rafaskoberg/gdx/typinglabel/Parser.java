@@ -101,7 +101,7 @@ class Parser {
                     if(replacement == null) replacement = "";
                     break;
                 case RESET:
-                    replacement = RESET_REPLACEMENT;
+                    replacement = RESET_REPLACEMENT + label.getDefaultToken();
                     break;
                 default:
                     // We don't want to process this token now. Move one index forward to continue the search

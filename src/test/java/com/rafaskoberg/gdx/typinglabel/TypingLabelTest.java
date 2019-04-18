@@ -127,6 +127,7 @@ public class TypingLabelTest extends ApplicationAdapter {
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
+        label.setDefaultToken("{EASE}");
 
         // Make the label wrap to new lines, respecting the table's layout.
         label.setWrap(true);

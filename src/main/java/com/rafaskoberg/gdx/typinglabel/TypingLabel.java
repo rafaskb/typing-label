@@ -64,6 +64,7 @@ public class TypingLabel extends Label {
     private       boolean       skipping              = false;
     private       boolean       ignoringEvents        = false;
     private       boolean       ignoringEffects       = false;
+    private       String        defaultToken          = "";
 
     // Superclass mirroring
     boolean wrap;
@@ -182,8 +183,24 @@ public class TypingLabel extends Label {
         this.forceMarkupColor = forceMarkupColor;
     }
 
+    /** Returns the default token being used in this label. Defaults to empty string. */
+    public String getDefaultToken() {
+        return defaultToken;
+    }
+
+    /**
+     * Sets the default token being used in this label. This token will be used before the label's text, and after each
+     * {RESET} call. Useful if you want a certain token to be active at all times without having to type it all the
+     * time.
+     */
+    public void setDefaultToken(String defaultToken) {
+        this.defaultToken = defaultToken == null ? "" : defaultToken;
+        this.parsed = false;
+    }
+
     /** Parses all tokens of this label. Use this after setting the text and any variables that should be replaced. */
     public void parseTokens() {
+        this.setText(getDefaultToken() + getText(), false);
         Parser.parseTokens(this);
         parsed = true;
     }
