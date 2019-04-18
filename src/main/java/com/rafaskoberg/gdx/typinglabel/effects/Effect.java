@@ -13,7 +13,7 @@ public abstract class Effect {
     public               int         indexStart    = -1;
     public               int         indexEnd      = -1;
     public               float       duration      = Float.POSITIVE_INFINITY;
-    private              float       totalTime;
+    protected            float       totalTime;
 
     public Effect(TypingLabel label) {
         this.label = label;
