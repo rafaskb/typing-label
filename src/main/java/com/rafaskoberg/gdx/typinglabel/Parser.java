@@ -339,7 +339,7 @@ class Parser {
             sb.append(tokens[i]);
             if((i + 1) < tokens.length) sb.append('|');
         }
-        sb.append(")(?:=([;#_ \\.\\w]+))?\\}");
+        sb.append(")(?:=([;#-_ \\.\\w]+))?\\}");
         return Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE);
     }
 
