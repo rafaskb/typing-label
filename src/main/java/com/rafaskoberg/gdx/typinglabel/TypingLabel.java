@@ -371,7 +371,7 @@ public class TypingLabel extends Label {
                 // Apply effect to glyph
                 for(int j = Math.max(0, start); j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
                     Glyph glyph = glyphCache.get(j);
-                    effect.apply(glyph, j);
+                    effect.apply(glyph, j, delta);
                 }
             }
         }

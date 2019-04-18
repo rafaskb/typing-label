@@ -20,7 +20,7 @@ public class JumpEffect extends Effect {
     }
 
     @Override
-    protected void onApply(Glyph glyph, int localIndex) {
+    protected void onApply(Glyph glyph, int localIndex, float delta) {
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float normalFrequency = (1f / frequency) * DEFAULT_FREQUENCY;

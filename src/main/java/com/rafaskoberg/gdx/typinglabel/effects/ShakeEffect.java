@@ -22,7 +22,7 @@ public class ShakeEffect extends Effect {
     }
 
     @Override
-    protected void onApply(Glyph glyph, int localIndex) {
+    protected void onApply(Glyph glyph, int localIndex, float delta) {
         // Make sure we can hold enough entries for the current index
         if(localIndex >= lastOffsets.size / 2) {
             lastOffsets.setSize(lastOffsets.size + 16);
