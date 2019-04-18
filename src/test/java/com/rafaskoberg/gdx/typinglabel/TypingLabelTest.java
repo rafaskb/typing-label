@@ -112,7 +112,7 @@ public class TypingLabelTest extends ApplicationAdapter {
     public TypingLabel createTypingLabel() {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
-        text.append("{SLOWER}{COLOR=SCARLET}{WAVE} Welcome,{WAIT} {VAR=title}!{ENDWAVE}");
+        text.append("{SLOWER}{COLOR=SCARLET}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
         text.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you");
         text.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}");

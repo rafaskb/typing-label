@@ -14,9 +14,10 @@ import java.util.regex.Pattern;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static final Pattern PATTERN_TOKEN_STRIP  = compileTokenPattern();
-    private static final Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
-    private static final String  RESET_REPLACEMENT    = getResetReplacement();
+    private static final Pattern  PATTERN_TOKEN_STRIP  = compileTokenPattern();
+    private static final Pattern  PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static final String   RESET_REPLACEMENT    = getResetReplacement();
+    private static final String[] BOOLEAN_TRUE         = {"true", "yes", "t", "y", "on", "1"};
 
     public static final int INDEX_TOKEN = 1;
     public static final int INDEX_PARAM = 2;
@@ -242,13 +243,16 @@ class Parser {
                     break;
 
                 case EASE:
-                    // distance;intensity
+                    // distance;intensity;elastic
                     effect = new EaseEffect(label);
                     if(params.length > 0) {
                         ((EaseEffect) effect).distance = stringToFloat(params[0], 1);
                     }
                     if(params.length > 1) {
                         ((EaseEffect) effect).intensity = stringToFloat(params[1], 1);
+                    }
+                    if(params.length > 2) {
+                        ((EaseEffect) effect).elastic = stringToBoolean(params[2]);
                     }
                     break;
                 case ENDEASE:
@@ -319,6 +323,18 @@ class Parser {
             }
         }
         return defaultValue;
+    }
+
+    /** Returns a boolean value parsed from the given String, or the default value if the string couldn't be parsed. */
+    private static boolean stringToBoolean(String str) {
+        if(str != null) {
+            for(String booleanTrue : BOOLEAN_TRUE) {
+                if(booleanTrue.equalsIgnoreCase(str)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /** Encloses the given string in brackets to work as a regular color markup tag. */
