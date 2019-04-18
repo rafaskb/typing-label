@@ -56,13 +56,14 @@ public class TypingLabel extends Label {
     private       int           glyphCharIndex        = -1; // Only renderable chars, excludes color codes
     private       int           glyphCharCompensation = 0;
     private       int           cachedGlyphCharIndex  = -1; // Last glyphCharIndex sent to the cache
-    private       float         lastLayoutX           = 0, lastLayoutY = 0;
-    private boolean parsed          = false;
-    private boolean paused          = false;
-    private boolean ended           = false;
-    private boolean skipping        = false;
-    private boolean ignoringEvents  = false;
-    private boolean ignoringEffects = false;
+    private       float         lastLayoutX           = 0;
+    private       float         lastLayoutY           = 0;
+    private       boolean       parsed                = false;
+    private       boolean       paused                = false;
+    private       boolean       ended                 = false;
+    private       boolean       skipping              = false;
+    private       boolean       ignoringEvents        = false;
+    private       boolean       ignoringEffects       = false;
 
     // Superclass mirroring
     boolean wrap;
