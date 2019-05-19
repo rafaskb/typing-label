@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -29,6 +30,7 @@ public class TypingLabelTest extends ApplicationAdapter {
     TextButton  buttonPause;
     TextButton  buttonResume;
     TextButton  buttonRestart;
+    TextButton  buttonRebuild;
     TextButton  buttonSkip;
 
     @Override
@@ -43,7 +45,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        Table table = new Table();
+        final Table table = new Table();
         stage.addActor(table);
         table.setFillParent(true);
 
@@ -78,6 +80,16 @@ public class TypingLabelTest extends ApplicationAdapter {
             }
         });
 
+        buttonRebuild = new TextButton("Rebuild", skin);
+        buttonRebuild.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Cell<TypingLabel> labelCell = table.getCell(label);
+                label = createTypingLabel();
+                labelCell.setActor(label);
+            }
+        });
+
         buttonSkip = new TextButton("Skip", skin);
         buttonSkip.addListener(new ClickListener() {
             @Override
@@ -88,11 +100,11 @@ public class TypingLabelTest extends ApplicationAdapter {
 
         table.pad(50f);
         table.debugCell();
-        table.add(label).colspan(4).growX();
+        table.add(label).colspan(5).growX();
         table.row();
-        table.add(labelEvent).colspan(4).align(Align.center);
+        table.add(labelEvent).colspan(5).align(Align.center);
         table.row().uniform().expand().growX().space(40).center();
-        table.add(buttonPause, buttonResume, buttonRestart, buttonSkip);
+        table.add(buttonPause, buttonResume, buttonRestart, buttonSkip, buttonRebuild);
 
         table.pack();
         Table.debugCellColor.set(Color.DARK_GRAY);
