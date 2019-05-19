@@ -49,6 +49,7 @@ public class TypingLabel extends Label {
     private final Array<Glyph>  glyphCache            = new Array<Glyph>();
     private final IntArray      glyphRunCapacities    = new IntArray();
     private final IntArray      offsetCache           = new IntArray();
+    private final IntArray      layoutLineBreaks      = new IntArray();
     private final Array<Effect> activeEffects         = new Array<Effect>();
     private       float         textSpeed             = TypingConfig.DEFAULT_SPEED_PER_CHAR;
     private       float         charCooldown          = textSpeed;
@@ -286,6 +287,7 @@ public class TypingLabel extends Label {
         glyphCache.clear();
         glyphRunCapacities.clear();
         offsetCache.clear();
+        layoutLineBreaks.clear();
         activeEffects.clear();
 
         // Reset state
@@ -404,9 +406,14 @@ public class TypingLabel extends Label {
         // Process chars while there's room for it
         while(skipping || charCooldown < 0.0f) {
             // Apply compensation to glyph index, if any
-            if(glyphCharCompensation > 0) {
-                glyphCharIndex++;
-                glyphCharCompensation--;
+            if(glyphCharCompensation != 0) {
+                if(glyphCharCompensation > 0) {
+                    glyphCharIndex++;
+                    glyphCharCompensation--;
+                } else {
+                    glyphCharIndex--;
+                    glyphCharCompensation++;
+                }
 
                 // Increment cooldown and wait for it
                 charCooldown += textSpeed;
@@ -417,7 +424,7 @@ public class TypingLabel extends Label {
             rawCharIndex++;
 
             // Get next character and calculate cooldown increment
-            int safeIndex = MathUtils.clamp(rawCharIndex - 1, 0, getText().length - 1);
+            int safeIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
             char primitiveChar = '\u0000'; // Null character by default
             if(getText().length > 0) {
                 primitiveChar = getText().charAt(safeIndex);
@@ -437,8 +444,15 @@ public class TypingLabel extends Label {
                 return;
             }
 
+            // Detect layout line breaks
+            boolean isLayoutLineBreak = false;
+            if(layoutLineBreaks.contains(glyphCharIndex)) {
+                layoutLineBreaks.removeValue(glyphCharIndex);
+                isLayoutLineBreak = true;
+            }
+
             // Increase glyph char index for all characters, except new lines.
-            if(rawCharIndex >= 0 && primitiveChar != '\n') glyphCharIndex++;
+            if(rawCharIndex >= 0 && primitiveChar != '\n' && !isLayoutLineBreak) glyphCharIndex++;
 
             // Process tokens according to the current index
             while(tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex) {
@@ -698,6 +712,9 @@ public class TypingLabel extends Label {
         GlyphLayout layout = super.getGlyphLayout();
         Array<GlyphRun> runs = layout.runs;
 
+        // Reset layout line breaks
+        layoutLineBreaks.clear();
+
         // Store GlyphRun sizes and count how many glyphs we have
         int glyphCount = 0;
         glyphRunCapacities.setSize(runs.size);
@@ -715,9 +732,19 @@ public class TypingLabel extends Label {
 
         // Clone original glyphs with independent instances
         int index = -1;
+        float lastY = 0;
         for(int i = 0; i < runs.size; i++) {
-            Array<Glyph> glyphs = runs.get(i).glyphs;
+            GlyphRun run = runs.get(i);
+            Array<Glyph> glyphs = run.glyphs;
             for(int j = 0; j < glyphs.size; j++) {
+
+                // Detect and store layout line breaks
+                if(!MathUtils.isEqual(run.y, lastY)) {
+                    lastY = run.y;
+                    layoutLineBreaks.add(index);
+                }
+
+                // Increment index
                 index++;
 
                 // Get original glyph
