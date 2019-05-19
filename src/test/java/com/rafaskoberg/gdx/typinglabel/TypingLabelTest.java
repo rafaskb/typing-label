@@ -132,8 +132,8 @@ public class TypingLabelTest extends ApplicationAdapter {
         text.append("{COLOR=#ff0000} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}");
         text.append("{SPEED=2.50}{COLOR=LIME} making the text go really fast{WAIT}");
         text.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow.{ENDWAVE}");
-        text.append("{RESET} You can also wait for a {SHAKE=1;2;2}second{ENDSHAKE}{WAIT=1} {SHAKE=1;2;3}or two{ENDSHAKE}{WAIT=2},");
-        text.append("{COLOR=LIME} just to catch an event in code{EVENT=sample}!{WAIT}");
+        text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}or two{ENDEASE}{WAIT=2},");
+        text.append("{COLOR=LIME} just to catch an event in code{EVENT=example}!{WAIT}");
         text.append("{NORMAL}\n\n");
         text.append("{COLOR=GOLDENROD}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
 
