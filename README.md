@@ -1,6 +1,6 @@
 # TypingLabel
 
-[![Jitpack](https://jitpack.io/v/rafaskb/typing-label.svg)](https://jitpack.io/#rafaskb/typing-label)
+[![Maven Central](https://img.shields.io/maven-central/v/com.rafaskoberg.gdx/typing-label.svg?colorB=43BD15)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22typing-label%22)
 [![license](https://img.shields.io/github/license/rafaskb/typing-label.svg)](https://github.com/rafaskb/typing-label/blob/master/LICENSE)
 
 A libGDX Label that appears as if it was being typed in real time.
@@ -10,50 +10,25 @@ It works as a drop-in replacement for normal [Scene2D Labels](https://github.com
 ![Sample GIF](media/sample.gif)
 
 ## Installation
+Add the dependency to your build.gradle file, in the dependencies block of the core project:
 
 #### Using Gradle
-
-Step 1. Add the JitPack repository to your root build.gradle file at the end of repositories:
 ```groovy
-	allprojects {
-	    repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
-```
-
-Step 2. Add the dependency to your build.gradle file, in the dependencies block of the core project:
-
-```groovy
-	dependencies {
-		compile 'com.github.rafaskb:typing-label:1.0.5'
-	}
+dependencies {
+    compile 'com.rafaskoberg.gdx:typing-label:1.0.5'
+}
 ```
 
 #### Using Maven
-
-Step 1. Add the JitPack repository to your build file
 ```xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-```
-
-Step 2. Add the dependency
-```xml
-	<dependency>
-	    <groupId>com.rafaskoberg.gdx</groupId>
-	    <artifactId>typing-label</artifactId>
-	    <version>1.0.5</version>
-	</dependency>
+<dependency>
+    <groupId>com.rafaskoberg.gdx</groupId>
+    <artifactId>typing-label</artifactId>
+    <version>1.0.5</version>
+</dependency>
 ```
 
 #### Manually
-
 Alternatively you can download the source [as a zip](https://github.com/RafaSKB/typing-label/archive/master.zip) and copy the contents of `typing-label/src` into your project.
 
 
