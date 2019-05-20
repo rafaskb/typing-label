@@ -19,12 +19,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.Effect;
-import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /**
  * An extension of {@link Label} that progressively shows the text as if it was being typed in real time, and allows the
@@ -457,84 +451,57 @@ public class TypingLabel extends Label {
             // Process tokens according to the current index
             while(tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex) {
                 TokenEntry entry = tokenEntries.pop();
-                Token token = entry.token;
+                String token = entry.token;
+                TokenCategory category = entry.category;
 
-                // Speed
-                if(token.isSpeed()) {
-                    textSpeed = entry.floatValue;
-                    continue;
-                }
-
-                // Wait
-                if(token == Token.WAIT) {
-                    glyphCharIndex--;
-                    glyphCharCompensation++;
-                    charCooldown += entry.floatValue;
-                    continue;
-                }
-
-                // Skip
-                if(token == Token.SKIP) {
-                    if(entry.stringValue != null) {
-                        rawCharIndex += entry.stringValue.length();
+                // Process tokens
+                switch(category) {
+                    case SPEED: {
+                        textSpeed = entry.floatValue;
+                        continue;
                     }
-                    continue;
-                }
-
-                // Event
-                if(token == Token.EVENT) {
-                    if(this.listener != null && !ignoringEvents) {
-                        listener.event(entry.stringValue);
+                    case WAIT: {
+                        glyphCharIndex--;
+                        glyphCharCompensation++;
+                        charCooldown += entry.floatValue;
+                        continue;
                     }
-                    continue;
-                }
-
-                // Effects
-                if(token.isEffect()) {
-                    // Get effect class
-                    Class<? extends Effect> effectClass = null;
-                    switch(token) {
-                        case SHAKE:
-                        case ENDSHAKE:
-                            effectClass = ShakeEffect.class;
-                            break;
-                        case SICK:
-                        case ENDSICK:
-                            effectClass = SickEffect.class;
-                            break;
-                        case WAVE:
-                        case ENDWAVE:
-                            effectClass = WaveEffect.class;
-                            break;
-                        case EASE:
-                        case ENDEASE:
-                            effectClass = EaseEffect.class;
-                            break;
-                        case JUMP:
-                        case ENDJUMP:
-                            effectClass = JumpEffect.class;
-                            break;
-                        default:
-                            break;
+                    case SKIP: {
+                        if(entry.stringValue != null) {
+                            rawCharIndex += entry.stringValue.length();
+                        }
+                        continue;
                     }
+                    case EVENT: {
+                        if(this.listener != null && !ignoringEvents) {
+                            listener.event(entry.stringValue);
+                        }
+                        continue;
+                    }
+                    case EFFECT_START:
+                    case EFFECT_END: {
+                        // Get effect class
+                        boolean isStart = category == TokenCategory.EFFECT_START;
+                        Class<? extends Effect> effectClass = isStart ? TypingConfig.EFFECT_START_TOKENS.get(token) : TypingConfig.EFFECT_END_TOKENS.get(token);
 
-                    // End all effects of the same type
-                    for(int i = 0; i < activeEffects.size; i++) {
-                        Effect effect = activeEffects.get(i);
-                        if(effect.indexEnd < 0) {
-                            if(ClassReflection.isAssignableFrom(effectClass, effect.getClass())) {
-                                effect.indexEnd = glyphCharIndex - 1;
+                        // End all effects of the same type
+                        for(int i = 0; i < activeEffects.size; i++) {
+                            Effect effect = activeEffects.get(i);
+                            if(effect.indexEnd < 0) {
+                                if(ClassReflection.isAssignableFrom(effectClass, effect.getClass())) {
+                                    effect.indexEnd = glyphCharIndex - 1;
+                                }
                             }
                         }
-                    }
 
-                    // Create new effect if necessary
-                    if(token.isEffectStart()) {
-                        entry.effect.indexStart = glyphCharIndex;
-                        activeEffects.add(entry.effect);
-                    }
+                        // Create new effect if necessary
+                        if(isStart) {
+                            entry.effect.indexStart = glyphCharIndex;
+                            activeEffects.add(entry.effect);
+                        }
 
-                    continue;
+                        continue;
+                    }
                 }
             }
 
@@ -542,8 +509,7 @@ public class TypingLabel extends Label {
             if(listener != null) {
                 if(rawCharIndex > 0) {
                     int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
-                    char nextPrimitiveChar = getText().charAt(nextIndex);
-                    Character nextChar = Character.valueOf(nextPrimitiveChar);
+                    Character nextChar = getText().charAt(nextIndex);
                     listener.onChar(nextChar);
                 }
             }

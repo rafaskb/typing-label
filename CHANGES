@@ -1,3 +1,9 @@
+[1.0.5]
+- Added new SICK effect.
+- Fixed nasty bug causing effects to affect the wrong glyphs after line breaks due to line wraps not being accounted for.
+- Added support for custom effect tokens.
+- API Addition: Added registerEffect and unregisterEffect methods to TypingConfig.
+
 [1.0.4]
 - Fixed bug causing last glyph to be rendered as the first one in some cases.
 

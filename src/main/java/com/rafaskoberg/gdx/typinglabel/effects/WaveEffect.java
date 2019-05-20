@@ -3,6 +3,7 @@ package com.rafaskoberg.gdx.typinglabel.effects;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Interpolation;
+import com.rafaskoberg.gdx.typinglabel.Effect;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /** Moves the text vertically in a sine wave pattern. */
@@ -11,12 +12,32 @@ public class WaveEffect extends Effect {
     private static final float DEFAULT_DISTANCE  = 0.33f;
     private static final float DEFAULT_INTENSITY = 0.5f;
 
-    public float distance  = 1; // How much of their height they should move
-    public float frequency = 1; // How frequently the wave pattern repeats
-    public float intensity = 1; // How fast the glyphs should move
+    private float distance  = 1; // How much of their height they should move
+    private float frequency = 1; // How frequently the wave pattern repeats
+    private float intensity = 1; // How fast the glyphs should move
 
-    public WaveEffect(TypingLabel label) {
+    public WaveEffect(TypingLabel label, String[] params) {
         super(label);
+
+        // Distance
+        if(params.length > 0) {
+            this.distance = paramAsFloat(params[0], 1);
+        }
+
+        // Frequency
+        if(params.length > 1) {
+            this.frequency = paramAsFloat(params[1], 1);
+        }
+
+        // Intensity
+        if(params.length > 2) {
+            this.intensity = paramAsFloat(params[2], 1);
+        }
+
+        // Duration
+        if(params.length > 3) {
+            this.duration = paramAsFloat(params[3], -1);
+        }
     }
 
     @Override

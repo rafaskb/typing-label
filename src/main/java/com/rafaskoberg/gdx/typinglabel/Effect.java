@@ -1,10 +1,9 @@
 
-package com.rafaskoberg.gdx.typinglabel.effects;
+package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /** Abstract text effect. */
 public abstract class Effect {
@@ -86,6 +85,16 @@ public abstract class Effect {
     /** Returns the line height of the label controlling this effect. */
     protected float getLineHeight() {
         return label.getBitmapFontCache().getFont().getLineHeight() * label.getFontScaleY();
+    }
+
+    /** Returns a float value parsed from the given String, or the default value if the string couldn't be parsed. */
+    protected float paramAsFloat(String str, float defaultValue) {
+        return Parser.stringToFloat(str, defaultValue);
+    }
+
+    /** Returns a boolean value parsed from the given String, or the default value if the string couldn't be parsed. */
+    protected boolean paramAsBoolean(String str) {
+        return Parser.stringToBoolean(str);
     }
 
 }

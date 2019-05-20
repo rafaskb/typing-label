@@ -4,6 +4,7 @@ package com.rafaskoberg.gdx.typinglabel.effects;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.IntArray;
+import com.rafaskoberg.gdx.typinglabel.Effect;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /** Drips the text in a random pattern. */
@@ -17,8 +18,23 @@ public class SickEffect extends Effect {
 
     private IntArray indices = new IntArray();
 
-    public SickEffect(TypingLabel label) {
+    public SickEffect(TypingLabel label, String[] params) {
         super(label);
+
+        // Distance
+        if(params.length > 0) {
+            this.distance = paramAsFloat(params[0], 1);
+        }
+
+        // Intensity
+        if(params.length > 1) {
+            this.intensity = paramAsFloat(params[1], 1);
+        }
+
+        // Duration
+        if(params.length > 2) {
+            this.duration = paramAsFloat(params[2], -1);
+        }
     }
 
     @Override

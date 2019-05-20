@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.FloatArray;
+import com.rafaskoberg.gdx.typinglabel.Effect;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /** Shakes the text in a random pattern. */
@@ -14,11 +15,26 @@ public class ShakeEffect extends Effect {
 
     private final FloatArray lastOffsets = new FloatArray();
 
-    public float distance  = 1; // How far the glyphs should move
-    public float intensity = 1; // How fast the glyphs should move
+    private float distance  = 1; // How far the glyphs should move
+    private float intensity = 1; // How fast the glyphs should move
 
-    public ShakeEffect(TypingLabel label) {
+    public ShakeEffect(TypingLabel label, String[] params) {
         super(label);
+
+        // Distance
+        if(params.length > 0) {
+            this.distance = paramAsFloat(params[0], 1);
+        }
+
+        // Intensity
+        if(params.length > 1) {
+            this.intensity = paramAsFloat(params[1], 1);
+        }
+
+        // Duration
+        if(params.length > 2) {
+            this.duration = paramAsFloat(params[2], -1);
+        }
     }
 
     @Override

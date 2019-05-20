@@ -2,28 +2,34 @@
 package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.Effect;
-import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
-import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static final Pattern  PATTERN_TOKEN_STRIP  = compileTokenPattern();
     private static final Pattern  PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
-    private static final String   RESET_REPLACEMENT    = getResetReplacement();
     private static final String[] BOOLEAN_TRUE         = {"true", "yes", "t", "y", "on", "1"};
+    private static final int      INDEX_TOKEN          = 1;
+    private static final int      INDEX_PARAM          = 2;
 
-    public static final int INDEX_TOKEN = 1;
-    public static final int INDEX_PARAM = 2;
+    private static Pattern PATTERN_TOKEN_STRIP;
+    private static String  RESET_REPLACEMENT;
 
     /** Parses all tokens from the given {@link TypingLabel}. */
     static void parseTokens(TypingLabel label) {
+        // Compile patterns if necessary
+        if(PATTERN_TOKEN_STRIP == null || TypingConfig.dirtyEffectMaps) {
+            PATTERN_TOKEN_STRIP = compileTokenPattern();
+        }
+        if(RESET_REPLACEMENT == null || TypingConfig.dirtyEffectMaps) {
+            RESET_REPLACEMENT = getResetReplacement();
+        }
+
         // Adjust and check markup color
         if(label.forceMarkupColor) label.getBitmapFontCache().getFont().getData().markupEnabled = true;
 
@@ -65,18 +71,18 @@ class Parser {
             if(!m.find(matcherIndexOffset)) break;
 
             // Get token and parameter
-            final Token token = Token.fromName(m.group(INDEX_TOKEN));
+            final InternalToken internalToken = InternalToken.fromName(m.group(INDEX_TOKEN));
             final String param = m.groupCount() == INDEX_PARAM ? m.group(INDEX_PARAM) : null;
 
             // If token couldn't be parsed, move one index forward to continue the search
-            if(token == null) {
+            if(internalToken == null) {
                 matcherIndexOffset++;
                 continue;
             }
 
             // Process tokens and handle replacement
             String replacement = "";
-            switch(token) {
+            switch(internalToken) {
                 case COLOR:
                     if(hasMarkup) replacement = stringToColorMarkup(param);
                     break;
@@ -141,16 +147,30 @@ class Parser {
             // Make sure there's at least one regex match
             if(!m.find(matcherIndexOffset)) break;
 
+            // Get token name and category
+            String tokenName = m.group(INDEX_TOKEN).toUpperCase();
+            TokenCategory tokenCategory = null;
+            InternalToken tmpToken = InternalToken.fromName(tokenName);
+            if(tmpToken == null) {
+                if(TypingConfig.EFFECT_START_TOKENS.containsKey(tokenName)) {
+                    tokenCategory = TokenCategory.EFFECT_START;
+                } else if(TypingConfig.EFFECT_END_TOKENS.containsKey(tokenName)) {
+                    tokenCategory = TokenCategory.EFFECT_END;
+                }
+            } else {
+                tokenCategory = tmpToken.category;
+            }
+
             // Get token, param and index of where the token begins
-            final Token token = Token.fromName(m.group(INDEX_TOKEN));
-            final String paramsString = m.groupCount() == INDEX_PARAM ? m.group(INDEX_PARAM) : null;
+            int groupCount = m.groupCount();
+            final String paramsString = groupCount == INDEX_PARAM ? m.group(INDEX_PARAM) : null;
             final String[] params = paramsString == null ? new String[0] : paramsString.split(";");
             final String firstParam = params.length > 0 ? params[0] : null;
             final int index = m.start(0);
             int indexOffset = 0;
 
             // If token couldn't be parsed, move one index forward to continue the search
-            if(token == null) {
+            if(tokenCategory == null) {
                 matcherIndexOffset++;
                 continue;
             }
@@ -159,132 +179,68 @@ class Parser {
             float floatValue = 0;
             String stringValue = null;
             Effect effect = null;
-            switch(token) {
-                case WAIT:
+
+            switch(tokenCategory) {
+                case WAIT: {
                     floatValue = stringToFloat(firstParam, TypingConfig.DEFAULT_WAIT_VALUE);
                     break;
-
-                case SPEED:
-                    float minModifier = TypingConfig.MIN_SPEED_MODIFIER;
-                    float maxModifier = TypingConfig.MAX_SPEED_MODIFIER;
-                    float modifier = MathUtils.clamp(stringToFloat(firstParam, 1), minModifier, maxModifier);
-                    floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / modifier;
-                    break;
-                case SLOWER:
-                    floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.500f;
-                    break;
-                case SLOW:
-                    floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.667f;
-                    break;
-                case NORMAL:
-                    floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR;
-                    break;
-                case FAST:
-                    floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 2.000f;
-                    break;
-                case FASTER:
-                    floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 4.000f;
-                    break;
-
-                case EVENT:
+                }
+                case EVENT: {
                     stringValue = paramsString;
                     indexOffset = -1;
                     break;
-
-                case SHAKE:
-                    // distance;intensity;duration
-                    effect = new ShakeEffect(label);
-                    if(params.length > 0) {
-                        ((ShakeEffect) effect).distance = stringToFloat(params[0], 1);
-                    }
-                    if(params.length > 1) {
-                        ((ShakeEffect) effect).intensity = stringToFloat(params[1], 1);
-                    }
-                    if(params.length > 2) {
-                        ((ShakeEffect) effect).duration = stringToFloat(params[2], -1);
-                    }
-                    break;
-                case ENDSHAKE:
-                    break;
-
-                case SICK:
-                    // distance;intensity;duration
-                    effect = new SickEffect(label);
-                    if(params.length > 0) {
-                        ((SickEffect) effect).distance = stringToFloat(params[0], 1);
-                    }
-                    if(params.length > 1) {
-                        ((SickEffect) effect).intensity = stringToFloat(params[1], 1);
-                    }
-                    if(params.length > 2) {
-                        ((SickEffect) effect).duration = stringToFloat(params[2], -1);
+                }
+                case SPEED: {
+                    switch(tokenName) {
+                        case "SPEED":
+                            float minModifier = TypingConfig.MIN_SPEED_MODIFIER;
+                            float maxModifier = TypingConfig.MAX_SPEED_MODIFIER;
+                            float modifier = MathUtils.clamp(stringToFloat(firstParam, 1), minModifier, maxModifier);
+                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / modifier;
+                            break;
+                        case "SLOWER":
+                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.500f;
+                            break;
+                        case "SLOW":
+                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 0.667f;
+                            break;
+                        case "NORMAL":
+                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR;
+                            break;
+                        case "FAST":
+                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 2.000f;
+                            break;
+                        case "FASTER":
+                            floatValue = TypingConfig.DEFAULT_SPEED_PER_CHAR / 4.000f;
+                            break;
                     }
                     break;
-                case ENDSICK:
-                    break;
-
-                case WAVE:
-                    // distance;frequency;intensity;duration
-                    effect = new WaveEffect(label);
-                    if(params.length > 0) {
-                        ((WaveEffect) effect).distance = stringToFloat(params[0], 1);
-                    }
-                    if(params.length > 1) {
-                        ((WaveEffect) effect).frequency = stringToFloat(params[1], 1);
-                    }
-                    if(params.length > 2) {
-                        ((WaveEffect) effect).intensity = stringToFloat(params[2], 1);
-                    }
-                    if(params.length > 3) {
-                        ((WaveEffect) effect).duration = stringToFloat(params[3], -1);
-                    }
-                    break;
-                case ENDWAVE:
-                    break;
-
-                case EASE:
-                    // distance;intensity;elastic
-                    effect = new EaseEffect(label);
-                    if(params.length > 0) {
-                        ((EaseEffect) effect).distance = stringToFloat(params[0], 1);
-                    }
-                    if(params.length > 1) {
-                        ((EaseEffect) effect).intensity = stringToFloat(params[1], 1);
-                    }
-                    if(params.length > 2) {
-                        ((EaseEffect) effect).elastic = stringToBoolean(params[2]);
+                }
+                case EFFECT_START: {
+                    Class<? extends Effect> clazz = TypingConfig.EFFECT_START_TOKENS.get(tokenName.toUpperCase());
+                    try {
+                        if(clazz != null) {
+                            Constructor constructor = ClassReflection.getConstructors(clazz)[0];
+                            int constructorParamCount = constructor.getParameterTypes().length;
+                            if(constructorParamCount >= 2) {
+                                effect = (Effect) constructor.newInstance(label, params);
+                            } else {
+                                effect = (Effect) constructor.newInstance(label);
+                            }
+                        }
+                    } catch(ReflectionException e) {
+                        String message = "Failed to initialize " + tokenName + " effect token. Make sure the associated class (" + clazz + ") has only one constructor with TypingLabel as first parameter and optionally String[] as second.";
+                        throw new IllegalStateException(message, e);
                     }
                     break;
-                case ENDEASE:
+                }
+                case EFFECT_END: {
                     break;
-
-                case JUMP:
-                    // distance;frequency;intensity;duration
-                    effect = new JumpEffect(label);
-                    if(params.length > 0) {
-                        ((JumpEffect) effect).distance = stringToFloat(params[0], 1);
-                    }
-                    if(params.length > 1) {
-                        ((JumpEffect) effect).frequency = stringToFloat(params[1], 1);
-                    }
-                    if(params.length > 2) {
-                        ((JumpEffect) effect).intensity = stringToFloat(params[2], 1);
-                    }
-                    if(params.length > 3) {
-                        ((JumpEffect) effect).duration = stringToFloat(params[3], -1);
-                    }
-                    break;
-                case ENDJUMP:
-                    break;
-
-                default:
-                    // We don't want to process this token now. Move one index forward to continue the search
-                    matcherIndexOffset++;
-                    continue;
+                }
             }
 
             // Register token
-            TokenEntry entry = new TokenEntry(token, index + indexOffset, floatValue, stringValue);
+            TokenEntry entry = new TokenEntry(tokenName, tokenCategory, index + indexOffset, floatValue, stringValue);
             entry.effect = effect;
             label.tokenEntries.add(entry);
 
@@ -310,12 +266,12 @@ class Parser {
         while(m.find()) {
             final String tag = m.group(0);
             final int index = m.start(0);
-            label.tokenEntries.add(new TokenEntry(Token.SKIP, index, 0, tag));
+            label.tokenEntries.add(new TokenEntry("SKIP", TokenCategory.SKIP, index, 0, tag));
         }
     }
 
     /** Returns a float value parsed from the given String, or the default value if the string couldn't be parsed. */
-    private static float stringToFloat(String str, float defaultValue) {
+    static float stringToFloat(String str, float defaultValue) {
         if(str != null) {
             try {
                 return Float.parseFloat(str);
@@ -326,7 +282,7 @@ class Parser {
     }
 
     /** Returns a boolean value parsed from the given String, or the default value if the string couldn't be parsed. */
-    private static boolean stringToBoolean(String str) {
+    static boolean stringToBoolean(String str) {
         if(str != null) {
             for(String booleanTrue : BOOLEAN_TRUE) {
                 if(booleanTrue.equalsIgnoreCase(str)) {
@@ -350,10 +306,15 @@ class Parser {
     private static Pattern compileTokenPattern() {
         StringBuilder sb = new StringBuilder();
         sb.append("\\{(");
-        Token[] tokens = Token.values();
-        for(int i = 0; i < tokens.length; i++) {
-            sb.append(tokens[i]);
-            if((i + 1) < tokens.length) sb.append('|');
+        Array<String> tokens = new Array<>();
+        TypingConfig.EFFECT_START_TOKENS.keys().toArray(tokens);
+        TypingConfig.EFFECT_END_TOKENS.keys().toArray(tokens);
+        for(InternalToken token : InternalToken.values()) {
+            tokens.add(token.name);
+        }
+        for(int i = 0; i < tokens.size; i++) {
+            sb.append(tokens.get(i));
+            if((i + 1) < tokens.size) sb.append('|');
         }
         sb.append(")(?:=([;#-_ \\.\\w]+))?\\}");
         return Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE);
@@ -361,11 +322,14 @@ class Parser {
 
     /** Returns the replacement string intended to be used on {RESET} tokens. */
     private static String getResetReplacement() {
-        Token[] tokens = {Token.CLEARCOLOR, Token.NORMAL, Token.ENDJUMP, Token.ENDSHAKE, Token.ENDSICK, Token.ENDWAVE, Token.ENDEASE};
+        Array<String> tokens = new Array<>();
+        TypingConfig.EFFECT_END_TOKENS.keys().toArray(tokens);
+        tokens.add("CLEARCOLOR");
+        tokens.add("NORMAL");
 
         StringBuilder sb = new StringBuilder();
-        for(Token token : tokens) {
-            sb.append('{').append(token.name).append('}');
+        for(String token : tokens) {
+            sb.append('{').append(token).append('}');
         }
         return sb.toString();
     }

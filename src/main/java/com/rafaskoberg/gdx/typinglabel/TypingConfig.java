@@ -3,6 +3,12 @@ package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectFloatMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 
 /** Configuration class that easily allows the user to fine tune the library's functionality. */
 public class TypingConfig {
@@ -57,6 +63,48 @@ public class TypingConfig {
         map.put('?', 5.0f);
         map.put('\n', 20f);
         return map;
+    }
+
+    /** Map of start tokens and their effect classes. Internal use only. */
+    static final ObjectMap<String, Class<? extends Effect>> EFFECT_START_TOKENS = new ObjectMap<>();
+
+    /** Map of end tokens and their effect classes. Internal use only. */
+    static final ObjectMap<String, Class<? extends Effect>> EFFECT_END_TOKENS = new ObjectMap<>();
+
+    /** Whether or not effect tokens are dirty and need to be recalculated. */
+    static boolean dirtyEffectMaps = true;
+
+    /**
+     * Registers a new effect to TypingLabel.
+     *
+     * @param startTokenName Name of the token that starts the effect, such as WAVE.
+     * @param endTokenName   Name of the token that ends the effect, such as ENDWAVE.
+     * @param effectClass    Class of the effect, such as WaveEffect.class.
+     */
+    public static void registerEffect(String startTokenName, String endTokenName, Class<? extends Effect> effectClass) {
+        EFFECT_START_TOKENS.put(startTokenName.toUpperCase(), effectClass);
+        EFFECT_END_TOKENS.put(endTokenName.toUpperCase(), effectClass);
+        dirtyEffectMaps = true;
+    }
+
+    /**
+     * Unregisters an effect from TypingLabel.
+     *
+     * @param startTokenName Name of the token that starts the effect, such as WAVE.
+     * @param endTokenName   Name of the token that ends the effect, such as ENDWAVE.
+     */
+    public static void unregisterEffect(String startTokenName, String endTokenName) {
+        EFFECT_START_TOKENS.remove(startTokenName.toUpperCase());
+        EFFECT_END_TOKENS.remove(endTokenName.toUpperCase());
+    }
+
+    static {
+        // Register default tokens
+        registerEffect("EASE", "ENDEASE", EaseEffect.class);
+        registerEffect("JUMP", "ENDJUMP", JumpEffect.class);
+        registerEffect("SHAKE", "ENDSHAKE", ShakeEffect.class);
+        registerEffect("SICK", "ENDSICK", SickEffect.class);
+        registerEffect("WAVE", "ENDWAVE", WaveEffect.class);
     }
 
 }
