@@ -63,6 +63,7 @@ Check the Wiki:
 - [Usage examples](https://github.com/rafaskb/typing-label/wiki/Examples)
 - [Tokens](https://github.com/rafaskb/typing-label/wiki/Tokens)
 - [Fine tuning](https://github.com/rafaskb/typing-label/wiki/Fine-Tuning)
+- [Custom Effects](https://github.com/rafaskb/typing-label/wiki/Tokens#custom-effects)
 
 ----
 
