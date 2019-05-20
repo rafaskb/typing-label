@@ -124,18 +124,18 @@ public class TypingLabelTest extends ApplicationAdapter {
     public TypingLabel createTypingLabel() {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
-        text.append("{SLOWER}{COLOR=SCARLET}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
+        text.append("{WAIT=1}{SLOWER}{COLOR=#F92A72}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
         text.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you");
-        text.append("{COLOR=ROYAL} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}");
+        text.append("{COLOR=#2776E7} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}");
         text.append("{NORMAL}{CLEARCOLOR}{SICK} With this library{ENDSICK} you can control the flow of the text with");
-        text.append("{COLOR=#ff0000} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}");
-        text.append("{SPEED=2.50}{COLOR=LIME} making the text go really fast{WAIT}");
-        text.append("{SPEED=0.25}{COLOR=FOREST} or {WAVE=0.66}extremely slow.{ENDWAVE}");
-        text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}or two{ENDEASE}{WAIT=2},");
-        text.append("{COLOR=LIME} just to catch an event in code{EVENT=example}!{WAIT}");
+        text.append("{COLOR=#FD5FF0} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}");
+        text.append("{SPEED=2.50}{COLOR=#84DD60} making the text go really fast{WAIT}");
+        text.append("{SPEED=0.25}{COLOR=#A6E22D} or {WAVE=0.66}extremely slow.{ENDWAVE}");
+        text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}{COLOR=#E6DB74}or two{CLEARCOLOR}{ENDEASE}{WAIT=2},");
+        text.append("{COLOR=#84DD60} just to catch an event in code{EVENT=example}!{WAIT}");
         text.append("{NORMAL}\n\n");
-        text.append("{COLOR=GOLDENROD}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
+        text.append("{COLOR=ORANGE}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
