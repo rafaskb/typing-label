@@ -519,6 +519,7 @@ public class TypingLabel extends Label {
 
             // Break loop if this was our first glyph to prevent glyph issues.
             if(glyphCharIndex == -1) {
+                charCooldown = textSpeed;
                 break;
             }
 
