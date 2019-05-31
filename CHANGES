@@ -1,3 +1,6 @@
+[1.0.6]
+- Fixed bug causing glyphs to appear completely out of place.
+
 [1.0.5]
 - Added new SICK effect.
 - Fixed nasty bug causing effects to affect the wrong glyphs after line breaks due to line wraps not being accounted for.
