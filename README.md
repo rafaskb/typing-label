@@ -15,7 +15,7 @@ Add the dependency to your build.gradle file, in the dependencies block of the c
 #### Using Gradle
 ```groovy
 dependencies {
-    compile 'com.rafaskoberg.gdx:typing-label:1.0.5'
+    compile 'com.rafaskoberg.gdx:typing-label:1.0.6'
 }
 ```
 
@@ -24,7 +24,7 @@ dependencies {
 <dependency>
     <groupId>com.rafaskoberg.gdx</groupId>
     <artifactId>typing-label</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
