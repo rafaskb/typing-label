@@ -42,7 +42,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         float scale = 1;
         skin.getFont("default-font").getData().setScale(scale);
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new ScreenViewport(), batch);
         Gdx.input.setInputProcessor(stage);
 
         final Table table = new Table();
@@ -124,7 +124,7 @@ public class TypingLabelTest extends ApplicationAdapter {
     public TypingLabel createTypingLabel() {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
-        text.append("{WAIT=1}{SLOWER}{COLOR=#F92A72}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
+        text.append("{SLOWER}{COLOR=#F92A72}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
         text.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you");
         text.append("{COLOR=#2776E7} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}");
@@ -179,7 +179,7 @@ public class TypingLabelTest extends ApplicationAdapter {
     }
 
     public void update(float delta) {
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.act(delta);
     }
 
     @Override
