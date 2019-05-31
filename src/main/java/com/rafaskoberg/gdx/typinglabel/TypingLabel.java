@@ -514,7 +514,15 @@ public class TypingLabel extends Label {
                 }
             }
 
-            // Increment char counter and break loop if enough chars were processed
+            // Increment char counter
+            charCounter++;
+
+            // Break loop if this was our first glyph to prevent glyph issues.
+            if(glyphCharIndex == -1) {
+                break;
+            }
+
+            // Break loop if enough chars were processed
             charCounter++;
             int charLimit = TypingConfig.CHAR_LIMIT_PER_FRAME;
             if(!skipping && charLimit > 0 && charCounter > charLimit) {
