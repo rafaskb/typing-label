@@ -211,7 +211,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         config.depth = 16;
         config.fullscreen = false;
         config.resizable = false;
-        config.foregroundFPS = 30;
+        config.foregroundFPS = 60;
         config.backgroundFPS = 30;
 
         new LwjglApplication(new TypingLabelTest(), config);
