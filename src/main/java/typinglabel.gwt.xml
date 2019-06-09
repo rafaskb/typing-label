@@ -4,7 +4,7 @@
 <!-- To compile to Gwt, you need to reference this file in your master .gwt.xml
      file (usually called GdxDefinition.gwt.xml) as follows:
 
-     <inherits name='typinglabel' />
+     <inherits name="typinglabel" />
      
      You will also need to add a dependency on RegExodus in your GWT project (it might be useful to have in core, but it
      isn't at all necessary). The Gradle dependencies for GWT are:
@@ -16,5 +16,5 @@
   -->
 <module>
     <inherits name="regexodus"/>
-    <source path="com.rafaskoberg.gdx.typinglabel"/>
+    <source path=""/>
 </module>
