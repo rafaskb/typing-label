@@ -99,7 +99,6 @@ public class TypingLabelTest extends ApplicationAdapter {
         });
 
         table.pad(50f);
-        table.debugCell();
         table.add(label).colspan(5).growX();
         table.row();
         table.add(labelEvent).colspan(5).align(Align.center);
@@ -107,7 +106,6 @@ public class TypingLabelTest extends ApplicationAdapter {
         table.add(buttonPause, buttonResume, buttonRestart, buttonSkip, buttonRebuild);
 
         table.pack();
-        Table.debugCellColor.set(Color.DARK_GRAY);
     }
 
     public void adjustTypingConfigs() {
@@ -212,7 +210,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         config.fullscreen = false;
         config.resizable = false;
         config.foregroundFPS = 60;
-        config.backgroundFPS = 30;
+        config.backgroundFPS = 60;
 
         new LwjglApplication(new TypingLabelTest(), config);
     }
