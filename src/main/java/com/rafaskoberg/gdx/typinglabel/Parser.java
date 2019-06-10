@@ -59,19 +59,21 @@ class Parser {
         StringBuilder buf = new StringBuilder(text.length());
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
         int matcherIndexOffset = 0;
-
+        
         // Iterate through matches
         while(true) {
             // Reset buffer and matcher
             buf.setLength(0);
             m.setTarget(text);
 
+            m.setPosition(matcherIndexOffset);
             // Make sure there's at least one regex match
-            if(!m.find(matcherIndexOffset)) break;
-
+            if(!m.find())
+                break;
+            
             // Get token and parameter
             final InternalToken internalToken = InternalToken.fromName(m.group(INDEX_TOKEN));
-            final String param = m.groupCount() == INDEX_PARAM ? m.group(INDEX_PARAM) : null;
+            final String param = m.group(INDEX_PARAM);
 
             // If token couldn't be parsed, move one index forward to continue the search
             if(internalToken == null) {
@@ -116,7 +118,8 @@ class Parser {
             }
 
             // Update text with replacement
-            text = m.replaceFirst("\\Q"+replacement+"\\E");
+            m.setPosition(m.start());
+            text = m.replaceFirst(replacement);
         }
 
         // Set new text
@@ -130,7 +133,7 @@ class Parser {
 
         // Create matcher and buffer
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
-        StringBuffer buf = new StringBuffer(text.length());
+        StringBuilder buf = new StringBuilder(text.length());
         int matcherIndexOffset = 0;
 
         // Iterate through matches
@@ -138,9 +141,9 @@ class Parser {
             // Reset matcher and buffer
             m.setTarget(text);
             buf.setLength(0);
-
+            m.setPosition(matcherIndexOffset);
             // Make sure there's at least one regex match
-            if(!m.find(matcherIndexOffset)) break;
+            if(!m.find()) break;
 
             // Get token name and category
             String tokenName = m.group(INDEX_TOKEN).toUpperCase();
@@ -240,6 +243,7 @@ class Parser {
             label.tokenEntries.add(entry);
 
             // Set new text without tokens
+            m.setPosition(0);
             text = m.replaceFirst("");
         }
 
