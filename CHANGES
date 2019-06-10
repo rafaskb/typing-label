@@ -1,5 +1,6 @@
-[Unreleased]
+[1.0.7]
 - Added new WIND effect.
+- Added proper support to HTML / GWT by using RegExodus, thanks tommyettinger! See https://github.com/rafaskb/typing-label/pull/12
 
 [1.0.6]
 - Fixed bug causing glyphs to appear completely out of place.
