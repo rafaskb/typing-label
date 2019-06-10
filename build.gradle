@@ -22,6 +22,7 @@ version '1.0.6'
 group 'com.rafaskoberg.gdx'
 
 def gdxVersion = '1.9.9'
+def regExodusVersion = '0.1.10'
 
 // Disable JDK 8's doclint
 // http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
@@ -48,7 +49,7 @@ repositories {
 
 dependencies {
     api group: 'com.badlogicgames.gdx', name: 'gdx', version: gdxVersion
-    api group: 'com.github.tommyettinger', name: 'regexodus', version: "0.1.10"
+    api group: 'com.github.tommyettinger', name: 'regexodus', version: regExodusVersion
     testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-backend-lwjgl', version: gdxVersion
     testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-platform', version: gdxVersion, classifier: 'natives-desktop'
 }
