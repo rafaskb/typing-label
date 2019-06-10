@@ -1,3 +1,5 @@
+![Typing Label Logo](logo.png)
+
 # TypingLabel
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.rafaskoberg.gdx/typing-label.svg?colorB=43BD15)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22typing-label%22)
