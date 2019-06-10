@@ -6,13 +6,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import regexodus.*;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static final Pattern  PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static final Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+
     private static final String[] BOOLEAN_TRUE         = {"true", "yes", "t", "y", "on", "1"};
     private static final int      INDEX_TOKEN          = 1;
     private static final int      INDEX_PARAM          = 2;
@@ -57,7 +56,7 @@ class Parser {
         boolean hasMarkup = label.getBitmapFontCache().getFont().getData().markupEnabled;
 
         // Create buffer
-        StringBuffer buf = new StringBuffer(text.length());
+        StringBuilder buf = new StringBuilder(text.length());
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
         int matcherIndexOffset = 0;
 
@@ -65,7 +64,7 @@ class Parser {
         while(true) {
             // Reset buffer and matcher
             buf.setLength(0);
-            m.reset(text);
+            m.setTarget(text);
 
             // Make sure there's at least one regex match
             if(!m.find(matcherIndexOffset)) break;
@@ -116,12 +115,8 @@ class Parser {
                     continue;
             }
 
-            // Remove token from string
-            m.appendReplacement(buf, Matcher.quoteReplacement(replacement));
-            m.appendTail(buf);
-
             // Update text with replacement
-            text = buf.toString();
+            text = m.replaceFirst("\\Q"+replacement+"\\E");
         }
 
         // Set new text
@@ -141,7 +136,7 @@ class Parser {
         // Iterate through matches
         while(true) {
             // Reset matcher and buffer
-            m.reset(text);
+            m.setTarget(text);
             buf.setLength(0);
 
             // Make sure there's at least one regex match
@@ -244,12 +239,8 @@ class Parser {
             entry.effect = effect;
             label.tokenEntries.add(entry);
 
-            // Remove token from string
-            m.appendReplacement(buf, Matcher.quoteReplacement(""));
-            m.appendTail(buf);
-
             // Set new text without tokens
-            text = buf.toString();
+            text = m.replaceFirst("");
         }
 
         // Update label text
@@ -317,7 +308,7 @@ class Parser {
             if((i + 1) < tokens.size) sb.append('|');
         }
         sb.append(")(?:=([;#-_ \\.\\w]+))?\\}");
-        return Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE);
+        return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 
     /** Returns the replacement string intended to be used on {RESET} tokens. */
