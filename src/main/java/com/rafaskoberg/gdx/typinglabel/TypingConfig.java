@@ -9,6 +9,7 @@ import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.WindEffect;
 
 /** Configuration class that easily allows the user to fine tune the library's functionality. */
 public class TypingConfig {
@@ -105,6 +106,7 @@ public class TypingConfig {
         registerEffect("SHAKE", "ENDSHAKE", ShakeEffect.class);
         registerEffect("SICK", "ENDSICK", SickEffect.class);
         registerEffect("WAVE", "ENDWAVE", WaveEffect.class);
+        registerEffect("WIND", "ENDWIND", WindEffect.class);
     }
 
 }

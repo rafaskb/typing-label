@@ -135,7 +135,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}{COLOR=#E6DB74}or two{CLEARCOLOR}{ENDEASE}{WAIT=2},");
         text.append("{COLOR=#84DD60} just to catch an event in code{EVENT=example}!{WAIT}");
         text.append("{NORMAL}\n\n");
-        text.append("{COLOR=ORANGE}{SLOWER} {WAVE=2;1;1;3}Imagine the possibilities! =D{ENDWAVE}");
+        text.append("{COLOR=ORANGE}{SLOWER}{WIND=2;4;0.5;0.5}Imagine the possibilities! =D{ENDWIND}");
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
