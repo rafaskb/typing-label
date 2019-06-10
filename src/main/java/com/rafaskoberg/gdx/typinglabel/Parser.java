@@ -6,15 +6,17 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import regexodus.*;
+import regexodus.Matcher;
+import regexodus.Pattern;
+import regexodus.REFlags;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
     private static final Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
 
-    private static final String[] BOOLEAN_TRUE         = {"true", "yes", "t", "y", "on", "1"};
-    private static final int      INDEX_TOKEN          = 1;
-    private static final int      INDEX_PARAM          = 2;
+    private static final String[] BOOLEAN_TRUE = {"true", "yes", "t", "y", "on", "1"};
+    private static final int      INDEX_TOKEN  = 1;
+    private static final int      INDEX_PARAM  = 2;
 
     private static Pattern PATTERN_TOKEN_STRIP;
     private static String  RESET_REPLACEMENT;
@@ -55,22 +57,21 @@ class Parser {
         CharSequence text = label.getText();
         boolean hasMarkup = label.getBitmapFontCache().getFont().getData().markupEnabled;
 
-        // Create buffer
-        StringBuilder buf = new StringBuilder(text.length());
+        // Create string builder
+        StringBuilder sb = new StringBuilder(text.length());
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
         int matcherIndexOffset = 0;
-        
+
         // Iterate through matches
         while(true) {
-            // Reset buffer and matcher
-            buf.setLength(0);
+            // Reset StringBuilder and matcher
+            sb.setLength(0);
             m.setTarget(text);
-
             m.setPosition(matcherIndexOffset);
+
             // Make sure there's at least one regex match
-            if(!m.find())
-                break;
-            
+            if(!m.find()) break;
+
             // Get token and parameter
             final InternalToken internalToken = InternalToken.fromName(m.group(INDEX_TOKEN));
             final String param = m.group(INDEX_PARAM);
@@ -131,17 +132,18 @@ class Parser {
         // Get text
         CharSequence text = label.getText();
 
-        // Create matcher and buffer
+        // Create matcher and StringBuilder
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
-        StringBuilder buf = new StringBuilder(text.length());
+        StringBuilder sb = new StringBuilder(text.length());
         int matcherIndexOffset = 0;
 
         // Iterate through matches
         while(true) {
-            // Reset matcher and buffer
+            // Reset matcher and StringBuilder
             m.setTarget(text);
-            buf.setLength(0);
+            sb.setLength(0);
             m.setPosition(matcherIndexOffset);
+
             // Make sure there's at least one regex match
             if(!m.find()) break;
 
