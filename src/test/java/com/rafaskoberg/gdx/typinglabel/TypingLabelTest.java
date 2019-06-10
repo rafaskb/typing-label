@@ -38,7 +38,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         adjustTypingConfigs();
 
         batch = new SpriteBatch();
-        skin = new Skin(Gdx.files.internal("resources/uiskin.json"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
         skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         float scale = 1;
         skin.getFont("default-font").getData().setScale(scale);
