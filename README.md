@@ -14,11 +14,18 @@ It works as a drop-in replacement for normal [Scene2D Labels](https://github.com
 
 ## Installation
 
+Open _build.gradle_ in project root and add this to the _ext_ section under _allprojects_:
+
+```groovy
+typingLabelVersion = '1.0.6'
+regExodusVersion = '0.1.10' // Only if you're using HTML / GWT
+```
+
 #### Core module
 
 Add this to your _build.gradle_ core dependencies:
 ```groovy
-api 'com.rafaskoberg.gdx:typing-label:1.0.6'
+api 'com.rafaskoberg.gdx:typing-label:$typingLabelVersion'
 ```
 
 > _Note: Replace `api` with `compile` if you're using a Gradle version older than 3.4._
@@ -34,8 +41,8 @@ Add this to your _GdxDefinition.gwt.xml_ file:
 
 Add this to your _build.gradle_ html dependencies:
 ```groovy
-api 'com.github.tommyettinger:regexodus:0.1.10:sources'
-api 'com.rafaskoberg.gdx:typing-label:$typinglabelversion:sources'
+api 'com.github.tommyettinger:regexodus:$regExodusVersion:sources'
+api 'com.rafaskoberg.gdx:typing-label:$typingLabelVersion:sources'
 ```
 
 > _Note: Replace `api` with `compile` if you're using a Gradle version older than 3.4._
