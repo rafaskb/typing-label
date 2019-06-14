@@ -1,7 +1,6 @@
 
 package com.rafaskoberg.gdx.typinglabel.effects;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.IntFloatMap;
 import com.rafaskoberg.gdx.typinglabel.Effect;
