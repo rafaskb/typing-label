@@ -3,6 +3,7 @@ package com.rafaskoberg.gdx.typinglabel.effects;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.rafaskoberg.gdx.typinglabel.Effect;
+import com.rafaskoberg.gdx.typinglabel.TypingGlyph;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 import com.rafaskoberg.gdx.typinglabel.utils.SimplexNoise;
 
@@ -62,7 +63,7 @@ public class WindEffect extends Effect {
     }
 
     @Override
-    protected void onApply(Glyph glyph, int localIndex, float delta) {
+    protected void onApply(TypingGlyph glyph, int localIndex, float delta) {
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float normalSpacing = (1f / spacing) * DEFAULT_SPACING;

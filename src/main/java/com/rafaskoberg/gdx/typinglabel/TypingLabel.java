@@ -39,27 +39,27 @@ public class TypingLabel extends Label {
     boolean forceMarkupColor = TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT;
 
     // Internal state
-    private final StringBuilder originalText          = new StringBuilder();
-    private final Array<Glyph>  glyphCache            = new Array<Glyph>();
-    private final IntArray      glyphRunCapacities    = new IntArray();
-    private final IntArray      offsetCache           = new IntArray();
-    private final IntArray      layoutLineBreaks      = new IntArray();
-    private final Array<Effect> activeEffects         = new Array<Effect>();
-    private       float         textSpeed             = TypingConfig.DEFAULT_SPEED_PER_CHAR;
-    private       float         charCooldown          = textSpeed;
-    private       int           rawCharIndex          = -2; // All chars, including color codes
-    private       int           glyphCharIndex        = -1; // Only renderable chars, excludes color codes
-    private       int           glyphCharCompensation = 0;
-    private       int           cachedGlyphCharIndex  = -1; // Last glyphCharIndex sent to the cache
-    private       float         lastLayoutX           = 0;
-    private       float         lastLayoutY           = 0;
-    private       boolean       parsed                = false;
-    private       boolean       paused                = false;
-    private       boolean       ended                 = false;
-    private       boolean       skipping              = false;
-    private       boolean       ignoringEvents        = false;
-    private       boolean       ignoringEffects       = false;
-    private       String        defaultToken          = "";
+    private final StringBuilder      originalText          = new StringBuilder();
+    private final Array<TypingGlyph> glyphCache            = new Array<TypingGlyph>();
+    private final IntArray           glyphRunCapacities    = new IntArray();
+    private final IntArray           offsetCache           = new IntArray();
+    private final IntArray           layoutLineBreaks      = new IntArray();
+    private final Array<Effect>      activeEffects         = new Array<Effect>();
+    private       float              textSpeed             = TypingConfig.DEFAULT_SPEED_PER_CHAR;
+    private       float              charCooldown          = textSpeed;
+    private       int                rawCharIndex          = -2; // All chars, including color codes
+    private       int                glyphCharIndex        = -1; // Only renderable chars, excludes color codes
+    private       int                glyphCharCompensation = 0;
+    private       int                cachedGlyphCharIndex  = -1; // Last glyphCharIndex sent to the cache
+    private       float              lastLayoutX           = 0;
+    private       float              lastLayoutY           = 0;
+    private       boolean            parsed                = false;
+    private       boolean            paused                = false;
+    private       boolean            ended                 = false;
+    private       boolean            skipping              = false;
+    private       boolean            ignoringEvents        = false;
+    private       boolean            ignoringEffects       = false;
+    private       String             defaultToken          = "";
 
     // Superclass mirroring
     boolean wrap;
@@ -363,7 +363,7 @@ public class TypingLabel extends Label {
         // Restore glyph offsets
         if(activeEffects.size > 0) {
             for(int i = 0; i < glyphCache.size; i++) {
-                Glyph glyph = glyphCache.get(i);
+                TypingGlyph glyph = glyphCache.get(i);
                 glyph.xoffset = offsetCache.get(i * 2);
                 glyph.yoffset = offsetCache.get(i * 2 + 1);
             }
@@ -385,7 +385,7 @@ public class TypingLabel extends Label {
 
                 // Apply effect to glyph
                 for(int j = Math.max(0, start); j <= glyphCharIndex && j <= end && j < glyphCache.size; j++) {
-                    Glyph glyph = glyphCache.get(j);
+                    TypingGlyph glyph = glyphCache.get(j);
                     effect.apply(glyph, j, delta);
                 }
             }
@@ -726,7 +726,7 @@ public class TypingLabel extends Label {
                 Glyph original = glyphs.get(j);
 
                 // Get clone glyph
-                Glyph clone = null;
+                TypingGlyph clone = null;
                 if(index < glyphCache.size) {
                     clone = glyphCache.get(index);
                 }
@@ -739,6 +739,7 @@ public class TypingLabel extends Label {
                 clone.height *= getFontScaleY();
                 clone.xoffset *= getFontScaleX();
                 clone.yoffset *= getFontScaleY();
+                clone.run = run;
 
                 // Store offset data
                 offsetCache.set(index * 2, clone.xoffset);

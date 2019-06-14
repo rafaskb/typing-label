@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.FloatArray;
 import com.rafaskoberg.gdx.typinglabel.Effect;
+import com.rafaskoberg.gdx.typinglabel.TypingGlyph;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /** Shakes the text in a random pattern. */
@@ -38,7 +39,7 @@ public class ShakeEffect extends Effect {
     }
 
     @Override
-    protected void onApply(Glyph glyph, int localIndex, float delta) {
+    protected void onApply(TypingGlyph glyph, int localIndex, float delta) {
         // Make sure we can hold enough entries for the current index
         if(localIndex >= lastOffsets.size / 2) {
             lastOffsets.setSize(lastOffsets.size + 16);

@@ -8,8 +8,8 @@ import com.badlogic.gdx.utils.ReflectionPool;
 
 /** Utility class to manage {@link Glyph} pooling and cloning. */
 class GlyphUtils {
-    private static final Pool<Glyph> pool = new ReflectionPool<Glyph>(Glyph.class) {
-        protected void reset(Glyph glyph) {
+    private static final Pool<TypingGlyph> pool = new ReflectionPool<TypingGlyph>(TypingGlyph.class) {
+        protected void reset(TypingGlyph glyph) {
             GlyphUtils.reset(glyph);
         }
     };
@@ -18,7 +18,7 @@ class GlyphUtils {
      * Returns a glyph from this pool. The glyph may be new (from {@link Pool#newObject()}) or reused (previously {@link
      * Pool#free(Object) freed}).
      */
-    static Glyph obtain() {
+    static TypingGlyph obtain() {
         return pool.obtain();
     }
 
@@ -27,7 +27,7 @@ class GlyphUtils {
      * Pool#newObject()}) or reused (previously {@link Pool#free(Object) freed}).
      */
     static Glyph obtainClone(Glyph from) {
-        Glyph glyph = pool.obtain();
+        TypingGlyph glyph = pool.obtain();
         clone(from, glyph);
         return glyph;
     }
@@ -36,7 +36,7 @@ class GlyphUtils {
      * Puts the specified glyph in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already
      * contains {@link #max} free glyphs, the specified glyph is reset but not added to the pool.
      */
-    static void free(Glyph glyph) {
+    static void free(TypingGlyph glyph) {
         pool.free(glyph);
     }
 
@@ -45,12 +45,12 @@ class GlyphUtils {
      *
      * @see #free(Object)
      */
-    static void freeAll(Array<Glyph> glyphs) {
+    static void freeAll(Array<TypingGlyph> glyphs) {
         pool.freeAll(glyphs);
     }
 
     /** Called when a glyph is freed to clear the state of the glyph for possible later reuse. */
-    static void reset(Glyph glyph) {
+    static void reset(TypingGlyph glyph) {
         glyph.id = 0;
         glyph.srcX = 0;
         glyph.srcY = 0;
@@ -65,10 +65,13 @@ class GlyphUtils {
         glyph.xadvance = 0;
         glyph.kerning = null;
         glyph.fixedWidth = false;
+        glyph.colors = null;
+
+        glyph.run = null;
     }
 
     /** Copies all contents from the first glyph to the second one. */
-    static void clone(Glyph from, Glyph to) {
+    static void clone(Glyph from, TypingGlyph to) {
         to.id = from.id;
         to.srcX = from.srcX;
         to.srcY = from.srcY;
@@ -83,6 +86,9 @@ class GlyphUtils {
         to.xadvance = from.xadvance;
         to.kerning = from.kerning; // Keep the same instance, there's no reason to deep clone it
         to.fixedWidth = from.fixedWidth;
+        to.colors = from.colors;
+
+        to.run = null;
     }
 
 }

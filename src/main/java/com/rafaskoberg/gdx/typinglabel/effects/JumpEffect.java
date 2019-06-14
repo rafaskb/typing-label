@@ -4,6 +4,7 @@ package com.rafaskoberg.gdx.typinglabel.effects;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Interpolation;
 import com.rafaskoberg.gdx.typinglabel.Effect;
+import com.rafaskoberg.gdx.typinglabel.TypingGlyph;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /** Makes the text jumps and falls as if there was gravity. */
@@ -41,7 +42,7 @@ public class JumpEffect extends Effect {
     }
 
     @Override
-    protected void onApply(Glyph glyph, int localIndex, float delta) {
+    protected void onApply(TypingGlyph glyph, int localIndex, float delta) {
         // Calculate progress
         float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
         float normalFrequency = (1f / frequency) * DEFAULT_FREQUENCY;

@@ -23,13 +23,13 @@ public abstract class Effect {
     }
 
     /** Applies the effect to the given glyph. */
-    public final void apply(Glyph glyph, int glyphIndex, float delta) {
+    public final void apply(TypingGlyph glyph, int glyphIndex, float delta) {
         int localIndex = glyphIndex - indexStart;
         onApply(glyph, localIndex, delta);
     }
 
     /** Called when this effect should be applied to the given glyph. */
-    protected abstract void onApply(Glyph glyph, int localIndex, float delta);
+    protected abstract void onApply(TypingGlyph glyph, int localIndex, float delta);
 
     /** Returns whether or not this effect is finished and should be removed. Note that effects are infinite by default. */
     public boolean isFinished() {
