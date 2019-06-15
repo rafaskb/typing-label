@@ -806,9 +806,15 @@ public class TypingLabel extends Label {
 
                 // Put new glyph to this run
                 cachedGlyphCharIndex++;
+                TypingGlyph glyph = glyphCache.get(cachedGlyphCharIndex);
+                glyphs.add(glyph);
+
+                // Cache glyph's vertex index
+                glyph.internalIndex = glyphCount;
+
+                // Advance glyph count
                 glyphCount++;
                 glyphLeft--;
-                glyphs.add(glyphCache.get(cachedGlyphCharIndex));
             }
         }
     }
@@ -819,8 +825,15 @@ public class TypingLabel extends Label {
         addMissingGlyphs();
 
         // Update cache with new glyphs
-        // Check if we have special effects, otherwise only run this when necessary
+        BitmapFontCache bitmapFontCache = getBitmapFontCache();
         getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
+
+        // Tint glyphs
+        for(TypingGlyph glyph : glyphCache) {
+            if(glyph.internalIndex >= 0 && glyph.color != null) {
+                bitmapFontCache.setColors(glyph.color, glyph.internalIndex, glyph.internalIndex + 1);
+            }
+        }
 
         super.draw(batch, parentAlpha);
     }

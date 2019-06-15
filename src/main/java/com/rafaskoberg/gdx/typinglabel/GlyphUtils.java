@@ -67,6 +67,8 @@ class GlyphUtils {
         glyph.fixedWidth = false;
 
         glyph.run = null;
+        glyph.internalIndex = -1;
+        glyph.color = null;
     }
 
     /** Copies all contents from the first glyph to the second one. */
@@ -87,6 +89,8 @@ class GlyphUtils {
         to.fixedWidth = from.fixedWidth;
 
         to.run = null;
+        to.internalIndex = -1;
+        to.color = null;
     }
 
 }
