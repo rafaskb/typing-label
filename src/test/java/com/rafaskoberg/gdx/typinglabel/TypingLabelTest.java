@@ -120,28 +120,29 @@ public class TypingLabelTest extends ApplicationAdapter {
         TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT = true;
 
         // Create some global variables to handle style
-        TypingConfig.GLOBAL_VARS.put("FIRE_WIND", "{GRADIENT=ORANGE;DB6600;-0.5;5}{SLOWER}{WIND=2;4;0.5;0.5}");
+        TypingConfig.GLOBAL_VARS.put("FIRE_WIND", "{FASTER}{GRADIENT=ORANGE;DB6600;-0.5;5}{SLOWER}{WIND=2;4;0.5;0.5}");
     }
 
     public TypingLabel createTypingLabel() {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
+
         text.append("{SLOWER}{GRADIENT=FF00EB;F92A72;-0.5;5}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
         text.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you");
-        text.append("{COLOR=#2776E7} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}");
+        text.append("{GRADIENT=27C1F5;2776E7;-0.5;5} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}{ENDGRADIENT}");
         text.append("{NORMAL}{CLEARCOLOR}{SICK} With this library{ENDSICK} you can control the flow of the text with");
         text.append("{COLOR=#FD5FF0} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}");
         text.append("{SPEED=2.50}{COLOR=#84DD60} making the text go really fast{WAIT}");
         text.append("{SPEED=0.25}{COLOR=#A6E22D} or {WAVE=0.66}extremely slow.{ENDWAVE}");
         text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}{COLOR=#E6DB74}or two{CLEARCOLOR}{ENDEASE}{WAIT=2},");
-        text.append("{COLOR=#84DD60} just to catch an event in code{EVENT=example}!{WAIT}");
+        text.append("{RAINBOW} just to catch an event in code{EVENT=example}!{WAIT} {ENDRAINBOW}");
         text.append("{NORMAL}\n\n");
-        text.append("{VAR=FIRE_WIND}Imagine the possibilities! =D");
+        text.append("{VAR=FIRE_WIND}Imagine the possibilities! =D {RESET}\n");
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
-        label.setDefaultToken("{EASE}");
+        label.setDefaultToken("{EASE}{FADE=0;1;0.33}");
 
         // Make the label wrap to new lines, respecting the table's layout.
         label.setWrap(true);
