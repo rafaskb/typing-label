@@ -127,14 +127,14 @@ public class TypingLabelTest extends ApplicationAdapter {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
 
-        text.append("{SLOWER}{GRADIENT=FF00EB;F92A72;-0.5;5}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
+        text.append("{WAIT=1}{SLOWER}{GRADIENT=FF00EB;F92A72;-0.5;5}{EASE=-8;2;1}Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
-        text.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you");
-        text.append("{GRADIENT=27C1F5;2776E7;-0.5;5} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}{ENDGRADIENT}");
+        text.append("{RESET}This is a {SHAKE}simple test{ENDSHAKE} to show you");
+        text.append("{GRADIENT=27C1F5;2776E7;-0.5;5} {JUMP}how to make dialogues {SLOW}fun again! {ENDJUMP}{WAIT}{ENDGRADIENT}\n");
         text.append("{NORMAL}{CLEARCOLOR}{SICK} With this library{ENDSICK} you can control the flow of the text with");
         text.append("{COLOR=#FD5FF0} {SHAKE=0.5;2;3}tokens{ENDSHAKE},{CLEARCOLOR}{WAIT=0.7}");
-        text.append("{SPEED=2.50}{COLOR=#84DD60} making the text go really fast{WAIT}");
-        text.append("{SPEED=0.25}{COLOR=#A6E22D} or {WAVE=0.66}extremely slow.{ENDWAVE}");
+        text.append("{SPEED=2.50}{COLOR=#84DD60} making the text go really fast{WAIT} ");
+        text.append("{SPEED=0.25}{COLOR=#A6E22D}{WAVE=0.66}or extremely slow.{ENDWAVE}");
         text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}{COLOR=#E6DB74}or two{CLEARCOLOR}{ENDEASE}{WAIT=2},");
         text.append("{RAINBOW} just to catch an event in code{EVENT=example}!{WAIT} {ENDRAINBOW}");
         text.append("{NORMAL}\n\n");
