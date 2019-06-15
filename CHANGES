@@ -1,3 +1,6 @@
+[Unreleased]
+- Added global variables that can be set in TypingConfig.GLOBAL_VARS.
+
 [1.0.7]
 - Added new WIND effect.
 - Added proper support to HTML / GWT by using RegExodus, thanks tommyettinger! See https://github.com/rafaskb/typing-label/pull/12

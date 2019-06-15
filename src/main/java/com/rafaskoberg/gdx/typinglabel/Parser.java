@@ -92,22 +92,25 @@ class Parser {
                     if(hasMarkup) replacement = "[#" + label.getClearColor().toString() + "]";
                     break;
                 case VAR:
-                    String variable = param;
                     replacement = null;
 
                     // Try to replace variable through listener.
                     if(label.getTypingListener() != null) {
-                        replacement = label.getTypingListener().replaceVariable(variable);
+                        replacement = label.getTypingListener().replaceVariable(param);
                     }
 
                     // If replacement is null, get value from maps.
                     if(replacement == null) {
-                        variable = variable.toUpperCase();
-                        replacement = label.getVariables().get(variable, variable);
+                        replacement = label.getVariables().get(param.toUpperCase());
+                    }
+
+                    // If replacement is still null, get value from global scope
+                    if(replacement == null) {
+                        replacement = TypingConfig.GLOBAL_VARS.get(param.toUpperCase());
                     }
 
                     // Make sure we're not inserting "null" to the text.
-                    if(replacement == null) replacement = "";
+                    if(replacement == null) replacement = param.toUpperCase();
                     break;
                 case RESET:
                     replacement = RESET_REPLACEMENT + label.getDefaultToken();

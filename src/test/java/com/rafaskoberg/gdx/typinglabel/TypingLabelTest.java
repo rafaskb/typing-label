@@ -117,6 +117,10 @@ public class TypingLabelTest extends ApplicationAdapter {
 
         // Force bitmap fonts to use color markup
         TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT = true;
+
+        // Create some global variables to handle style
+        TypingConfig.GLOBAL_VARS.put("WIND", "{COLOR=ORANGE}{SLOWER}{WIND=2;4;0.5;0.5}");
+        TypingConfig.GLOBAL_VARS.put("ENDWIND", "{CLEARCOLOR}{NORMAL}{ENDWIND}");
     }
 
     public TypingLabel createTypingLabel() {
@@ -133,7 +137,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}{COLOR=#E6DB74}or two{CLEARCOLOR}{ENDEASE}{WAIT=2},");
         text.append("{COLOR=#84DD60} just to catch an event in code{EVENT=example}!{WAIT}");
         text.append("{NORMAL}\n\n");
-        text.append("{COLOR=ORANGE}{SLOWER}{WIND=2;4;0.5;0.5}Imagine the possibilities! =D{ENDWIND}");
+        text.append("{VAR=WIND}Imagine the possibilities! =D{VAR=ENDWIND}");
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);

@@ -54,6 +54,8 @@ public class TypingConfig {
      */
     public static ObjectFloatMap<Character> INTERVAL_MULTIPLIERS_BY_CHAR = new ObjectFloatMap<Character>();
 
+    /** Map of global variables that affect all {@link TypingLabel} instances at once. */
+    public static final ObjectMap<String, String> GLOBAL_VARS = new ObjectMap<>();
 
     /** Map of start tokens and their effect classes. Internal use only. */
     static final ObjectMap<String, Class<? extends Effect>> EFFECT_START_TOKENS = new ObjectMap<>();
