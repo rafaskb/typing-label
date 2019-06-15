@@ -52,19 +52,8 @@ public class TypingConfig {
      * Returns a map of characters and their respective interval multipliers, of which the interval to the next char
      * should be multiplied for.
      */
-    public static ObjectFloatMap<Character> INTERVAL_MULTIPLIERS_BY_CHAR = generateDefaultCharIntervals();
+    public static ObjectFloatMap<Character> INTERVAL_MULTIPLIERS_BY_CHAR = new ObjectFloatMap<Character>();
 
-    private static ObjectFloatMap<Character> generateDefaultCharIntervals() {
-        ObjectFloatMap<Character> map = new ObjectFloatMap<Character>();
-        map.put(' ', 0.0f);
-        map.put(':', 1.5f);
-        map.put(',', 2.5f);
-        map.put('.', 2.5f);
-        map.put('!', 5.0f);
-        map.put('?', 5.0f);
-        map.put('\n', 20f);
-        return map;
-    }
 
     /** Map of start tokens and their effect classes. Internal use only. */
     static final ObjectMap<String, Class<? extends Effect>> EFFECT_START_TOKENS = new ObjectMap<>();
@@ -100,6 +89,15 @@ public class TypingConfig {
     }
 
     static {
+        // Generate default char intervals
+        INTERVAL_MULTIPLIERS_BY_CHAR.put(' ', 0.0f);
+        INTERVAL_MULTIPLIERS_BY_CHAR.put(':', 1.5f);
+        INTERVAL_MULTIPLIERS_BY_CHAR.put(',', 2.5f);
+        INTERVAL_MULTIPLIERS_BY_CHAR.put('.', 2.5f);
+        INTERVAL_MULTIPLIERS_BY_CHAR.put('!', 5.0f);
+        INTERVAL_MULTIPLIERS_BY_CHAR.put('?', 5.0f);
+        INTERVAL_MULTIPLIERS_BY_CHAR.put('\n', 20f);
+
         // Register default tokens
         registerEffect("EASE", "ENDEASE", EaseEffect.class);
         registerEffect("JUMP", "ENDJUMP", JumpEffect.class);
