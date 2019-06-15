@@ -84,6 +84,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         buttonRebuild.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                adjustTypingConfigs();
                 Cell<TypingLabel> labelCell = table.getCell(label);
                 label = createTypingLabel();
                 labelCell.setActor(label);
@@ -119,14 +120,13 @@ public class TypingLabelTest extends ApplicationAdapter {
         TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT = true;
 
         // Create some global variables to handle style
-        TypingConfig.GLOBAL_VARS.put("WIND", "{COLOR=ORANGE}{SLOWER}{WIND=2;4;0.5;0.5}");
-        TypingConfig.GLOBAL_VARS.put("ENDWIND", "{CLEARCOLOR}{NORMAL}{ENDWIND}");
+        TypingConfig.GLOBAL_VARS.put("FIRE_WIND", "{GRADIENT=ORANGE;DB6600;-0.5;5}{SLOWER}{WIND=2;4;0.5;0.5}");
     }
 
     public TypingLabel createTypingLabel() {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
-        text.append("{SLOWER}{COLOR=#F92A72}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
+        text.append("{SLOWER}{GRADIENT=FF00EB;F92A72;-0.5;5}{EASE=-8;2;1} Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
         text.append("{RESET} This is a {SHAKE}simple test{ENDSHAKE} to show you");
         text.append("{COLOR=#2776E7} {JUMP}how to make dialogues {SLOW}fun again!{ENDJUMP}{WAIT}");
@@ -137,7 +137,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         text.append("{RESET} You can also wait for a {EASE=-15;2;1}second{ENDEASE}{WAIT=1} {EASE=15;8;1}{COLOR=#E6DB74}or two{CLEARCOLOR}{ENDEASE}{WAIT=2},");
         text.append("{COLOR=#84DD60} just to catch an event in code{EVENT=example}!{WAIT}");
         text.append("{NORMAL}\n\n");
-        text.append("{VAR=WIND}Imagine the possibilities! =D{VAR=ENDWIND}");
+        text.append("{VAR=FIRE_WIND}Imagine the possibilities! =D");
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
