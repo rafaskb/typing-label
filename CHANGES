@@ -2,6 +2,7 @@
 - Added global variables that can be set in TypingConfig.GLOBAL_VARS.
 - API Change: Effect::onApply now takes a TypingGlyph instead of Glyph. This might break custom effects.
 - Added new RAINBOW effect.
+- Added new GRADIENT effect.
 
 [1.0.7]
 - Added new WIND effect.
