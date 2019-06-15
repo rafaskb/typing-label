@@ -1,6 +1,7 @@
 
 package com.rafaskoberg.gdx.typinglabel;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -94,6 +95,11 @@ public abstract class Effect {
     /** Returns a boolean value parsed from the given String, or the default value if the string couldn't be parsed. */
     protected boolean paramAsBoolean(String str) {
         return Parser.stringToBoolean(str);
+    }
+
+    /** Returns a {@link Color} value parsed from the given String, or white if the string couldn't be parsed. */
+    protected Color paramAsColor(String str) {
+        return Parser.stringToColor(str);
     }
 
 }
