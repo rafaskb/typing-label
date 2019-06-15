@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.GradientEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.RainbowEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
@@ -107,6 +109,8 @@ public class TypingConfig {
         registerEffect("SICK", "ENDSICK", SickEffect.class);
         registerEffect("WAVE", "ENDWAVE", WaveEffect.class);
         registerEffect("WIND", "ENDWIND", WindEffect.class);
+        registerEffect("RAINBOW", "ENDRAINBOW", RainbowEffect.class);
+        registerEffect("GRADIENT", "ENDGRADIENT", GradientEffect.class);
     }
 
 }
