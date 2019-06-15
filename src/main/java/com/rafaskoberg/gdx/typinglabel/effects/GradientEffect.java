@@ -11,8 +11,8 @@ public class GradientEffect extends Effect {
     private static final float DEFAULT_DISTANCE  = 0.975f;
     private static final float DEFAULT_FREQUENCY = 2f;
 
-    private Color color1    = new Color(); // First color of the gradient.
-    private Color color2    = new Color(); // Second color of the gradient.
+    private Color color1    = null; // First color of the gradient.
+    private Color color2    = null; // Second color of the gradient.
     private float distance  = 1; // How extensive the rainbow effect should be.
     private float frequency = 1; // How frequently the color pattern should move through the text.
 
