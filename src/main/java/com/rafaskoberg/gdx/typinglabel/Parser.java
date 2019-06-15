@@ -90,6 +90,7 @@ class Parser {
                 case COLOR:
                     if(hasMarkup) replacement = stringToColorMarkup(param);
                     break;
+                case ENDCOLOR:
                 case CLEARCOLOR:
                     if(hasMarkup) replacement = "[#" + label.getClearColor().toString() + "]";
                     break;

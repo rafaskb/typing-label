@@ -13,6 +13,7 @@ enum InternalToken {
 	FASTER        ("FASTER",        TokenCategory.SPEED    ),
 	COLOR         ("COLOR",         TokenCategory.COLOR    ),
 	CLEARCOLOR    ("CLEARCOLOR",    TokenCategory.COLOR    ),
+	ENDCOLOR      ("ENDCOLOR",      TokenCategory.COLOR    ),
 	VAR           ("VAR",           TokenCategory.VARIABLE ),
 	EVENT         ("EVENT",         TokenCategory.EVENT    ),
 	RESET         ("RESET",         TokenCategory.RESET    ),
