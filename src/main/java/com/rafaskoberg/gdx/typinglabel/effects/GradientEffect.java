@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.rafaskoberg.gdx.typinglabel.Effect;
 import com.rafaskoberg.gdx.typinglabel.TypingGlyph;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
-import com.rafaskoberg.gdx.typinglabel.utils.ColorUtils;
 
 /** Tints the text in a gradient pattern. */
 public class GradientEffect extends Effect {
@@ -39,6 +38,10 @@ public class GradientEffect extends Effect {
         if(params.length > 3) {
             this.frequency = paramAsFloat(params[3], 1);
         }
+
+        // Validate parameters
+        if(this.color1 == null) this.color1 = new Color(Color.WHITE);
+        if(this.color2 == null) this.color2 = new Color(Color.WHITE);
     }
 
     @Override
@@ -49,9 +52,7 @@ public class GradientEffect extends Effect {
         float progress = calculateProgress(frequencyMod, distanceMod * localIndex, true);
 
         // Calculate color
-        if(glyph.color == null) {
-            glyph.color = new Color(Color.WHITE);
-        }
+        if(glyph.color == null) glyph.color = new Color(Color.WHITE);
         glyph.color.set(color1).lerp(color2, progress);
     }
 

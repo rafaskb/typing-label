@@ -97,7 +97,7 @@ public abstract class Effect {
         return Parser.stringToBoolean(str);
     }
 
-    /** Returns a {@link Color} value parsed from the given String, or white if the string couldn't be parsed. */
+    /** Parses a color from the given string. Returns null if the color couldn't be parsed. */
     protected Color paramAsColor(String str) {
         return Parser.stringToColor(str);
     }

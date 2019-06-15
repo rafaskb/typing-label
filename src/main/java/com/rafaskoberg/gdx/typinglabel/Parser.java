@@ -295,25 +295,23 @@ class Parser {
         return false;
     }
 
-    /** Returns a boolean value parsed from the given String, or white if the string couldn't be parsed. */
+    /** Parses a color from the given string. Returns null if the color couldn't be parsed. */
     static Color stringToColor(String str) {
-        Color color = new Color(Color.WHITE);
         if(str != null) {
-            boolean parsed = false;
 
             // Try to parse named color
             Color namedColor = Colors.get(str.toUpperCase());
             if(namedColor != null) {
-                color.set(namedColor);
-                parsed = true;
+                return new Color(namedColor);
             }
 
             // Try to parse hex
-            if(!parsed && str.length() >= 6) {
-                color.set(Color.valueOf(str));
+            if(str.length() >= 6) {
+                return Color.valueOf(str);
             }
         }
-        return color;
+
+        return null;
     }
 
     /** Encloses the given string in brackets to work as a regular color markup tag. */
