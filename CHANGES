@@ -3,6 +3,7 @@
 - API Change: Effect::onApply now takes a TypingGlyph instead of Glyph. This might break custom effects.
 - Added new RAINBOW effect.
 - Added new GRADIENT effect.
+- Added new FADE effect.
 
 [1.0.7]
 - Added new WIND effect.
