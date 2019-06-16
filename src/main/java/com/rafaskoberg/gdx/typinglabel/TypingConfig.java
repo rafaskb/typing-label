@@ -4,6 +4,7 @@ package com.rafaskoberg.gdx.typinglabel;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.rafaskoberg.gdx.typinglabel.effects.BlinkEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.FadeEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.GradientEffect;
@@ -113,6 +114,7 @@ public class TypingConfig {
         registerEffect("RAINBOW", "ENDRAINBOW", RainbowEffect.class);
         registerEffect("GRADIENT", "ENDGRADIENT", GradientEffect.class);
         registerEffect("FADE", "ENDFADE", FadeEffect.class);
+        registerEffect("BLINK", "ENDBLINK", BlinkEffect.class);
     }
 
 }

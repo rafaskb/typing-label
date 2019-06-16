@@ -4,6 +4,7 @@
 - Added new RAINBOW effect.
 - Added new GRADIENT effect.
 - Added new FADE effect.
+- Added new BLINK effect.
 - Added ENDCOLOR token, an alias of CLEARCOLOR, to be consistent with the rest of the tokens.
 
 [1.0.7]
