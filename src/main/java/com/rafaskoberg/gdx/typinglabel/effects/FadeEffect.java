@@ -12,7 +12,7 @@ import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 public class FadeEffect extends Effect {
     private Color color1       = null; // First color of the effect.
     private Color color2       = null; // Second color of the effect.
-    private float alpha1       = 1; // First alpha of the effect, in case a color isn't provided.
+    private float alpha1       = 0; // First alpha of the effect, in case a color isn't provided.
     private float alpha2       = 1; // Second alpha of the effect, in case a color isn't provided.
     private float fadeDuration = 1; // Duration of the fade effect
 
@@ -25,7 +25,7 @@ public class FadeEffect extends Effect {
         if(params.length > 0) {
             this.color1 = paramAsColor(params[0]);
             if(this.color1 == null) {
-                alpha1 = paramAsFloat(params[0], 1);
+                alpha1 = paramAsFloat(params[0], 0);
             }
         }
 
