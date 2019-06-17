@@ -126,7 +126,6 @@ public class TypingLabelTest extends ApplicationAdapter {
     public TypingLabel createTypingLabel() {
         // Create text with tokens
         final StringBuilder text = new StringBuilder();
-        text.append("{BLINK=RED;GREEN}Blink test with default values {RESET}\n");
         text.append("{WAIT=1}{SLOWER}{GRADIENT=FF70F1;FFC300;-0.5;5}{EASE=-8;2;1}Welcome,{WAIT} {VAR=title}!{ENDEASE}");
         text.append("{FAST}\n\n");
         text.append("{RESET}This is a {SHAKE}simple test{ENDSHAKE} to show you");
