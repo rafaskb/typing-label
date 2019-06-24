@@ -25,7 +25,7 @@ regExodusVersion = '0.1.10' // Only if you're using HTML / GWT
 
 Add this to your _build.gradle_ core dependencies:
 ```groovy
-api 'com.rafaskoberg.gdx:typing-label:$typingLabelVersion'
+api "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
 ```
 
 > _Note: Replace `api` with `compile` if you're using a Gradle version older than 3.4._
@@ -41,8 +41,8 @@ Add this to your _GdxDefinition.gwt.xml_ file:
 
 Add this to your _build.gradle_ html dependencies:
 ```groovy
-api 'com.github.tommyettinger:regexodus:$regExodusVersion:sources'
-api 'com.rafaskoberg.gdx:typing-label:$typingLabelVersion:sources'
+api "com.github.tommyettinger:regexodus:$regExodusVersion:sources"
+api "com.rafaskoberg.gdx:typing-label:$typingLabelVersion:sources"
 ```
 
 > _Note: Replace `api` with `compile` if you're using a Gradle version older than 3.4._
