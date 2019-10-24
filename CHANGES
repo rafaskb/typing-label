@@ -1,3 +1,6 @@
+[Unreleased]
+- Fixed exception being thrown when parsing malformed color values from token arguments.
+
 [1.1.0]
 - Added global variables that can be set in TypingConfig.GLOBAL_VARS.
 - API Change: Effect::onApply now takes a TypingGlyph instead of Glyph. This might break custom effects.

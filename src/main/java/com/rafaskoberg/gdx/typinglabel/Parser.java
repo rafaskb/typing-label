@@ -308,7 +308,10 @@ class Parser {
 
             // Try to parse hex
             if(str.length() >= 6) {
-                return Color.valueOf(str);
+                try {
+                    return Color.valueOf(str);
+                } catch(NumberFormatException ignored) {
+                }
             }
         }
 
