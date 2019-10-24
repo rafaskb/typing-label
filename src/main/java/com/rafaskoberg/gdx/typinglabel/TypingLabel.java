@@ -506,12 +506,10 @@ public class TypingLabel extends Label {
             }
 
             // Notify listener about char progression
-            if(listener != null) {
-                if(rawCharIndex > 0) {
-                    int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
-                    Character nextChar = getText().charAt(nextIndex);
-                    listener.onChar(nextChar);
-                }
+            int nextIndex = rawCharIndex == 0 ? 0 : MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
+            Character nextChar = nextIndex == 0 ? null : getText().charAt(nextIndex);
+            if(nextChar != null && listener != null) {
+                listener.onChar(nextChar);
             }
 
             // Increment char counter
