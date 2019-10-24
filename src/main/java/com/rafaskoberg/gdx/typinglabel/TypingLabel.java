@@ -525,7 +525,7 @@ public class TypingLabel extends Label {
             charCounter++;
             int charLimit = TypingConfig.CHAR_LIMIT_PER_FRAME;
             if(!skipping && charLimit > 0 && charCounter > charLimit) {
-                charCooldown = textSpeed;
+                charCooldown = Math.max(charCooldown, textSpeed);
                 break;
             }
         }
