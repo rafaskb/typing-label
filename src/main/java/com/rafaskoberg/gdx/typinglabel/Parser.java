@@ -130,7 +130,7 @@ class Parser {
         }
 
         // Set new text
-        label.setText(text, false);
+        label.setText(text, false, false);
     }
 
     /** Parses regular tokens that don't need replacement and register their indexes in the {@link TypingLabel}. */
@@ -256,7 +256,7 @@ class Parser {
         }
 
         // Update label text
-        label.setText(text, false);
+        label.setText(text, false, false);
     }
 
     /** Parse color markup tags and register SKIP tokens. */

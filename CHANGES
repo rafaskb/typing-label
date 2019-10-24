@@ -1,6 +1,7 @@
 [Unreleased]
 - API Addition: Added isSkipping method to TypingLabel class.
 - Fixed exception being thrown when parsing malformed color values from token arguments.
+- Fixed longer texts not being processed correctly after a setText call. Labels will now restart automatically after a setText call and will also skip to the end in case their progression has already ended.
 
 [1.1.0]
 - Added global variables that can be set in TypingConfig.GLOBAL_VARS.

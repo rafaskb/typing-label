@@ -117,8 +117,27 @@ public class TypingLabel extends Label {
      * @see #restart(CharSequence)
      */
     protected void setText(CharSequence newText, boolean modifyOriginalText) {
+        setText(newText, modifyOriginalText, true);
+    }
+
+    /**
+     * Sets the text of this label.
+     *
+     * @param modifyOriginalText Flag determining if the original text should be modified as well. If {@code false},
+     *                           only the display text is changed while the original text is untouched.
+     * @param restart            Whether or not this label should restart. Defaults to true.
+     * @see #restart(CharSequence)
+     */
+    protected void setText(CharSequence newText, boolean modifyOriginalText, boolean restart) {
+        final boolean hasEnded = this.hasEnded();
         super.setText(newText);
         if(modifyOriginalText) saveOriginalText();
+        if(restart) {
+            this.restart();
+        }
+        if(hasEnded) {
+            this.skipToTheEnd(true, false);
+        }
     }
 
     /** Similar to {@link #getText()}, but returns the original text with all the tokens unchanged. */
@@ -195,7 +214,7 @@ public class TypingLabel extends Label {
 
     /** Parses all tokens of this label. Use this after setting the text and any variables that should be replaced. */
     public void parseTokens() {
-        this.setText(getDefaultToken() + getText(), false);
+        this.setText(getDefaultToken() + getText(), false, false);
         Parser.parseTokens(this);
         parsed = true;
     }
@@ -309,7 +328,7 @@ public class TypingLabel extends Label {
         ignoringEffects = false;
 
         // Set new text
-        this.setText(newText);
+        this.setText(newText, true, false);
         invalidate();
 
         // Parse tokens
