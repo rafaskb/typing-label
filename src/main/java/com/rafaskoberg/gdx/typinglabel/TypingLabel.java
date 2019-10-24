@@ -243,6 +243,14 @@ public class TypingLabel extends Label {
         }
     }
 
+    /**
+     * Returns whether or not this label is currently skipping its typing progression all the way to the end. This is
+     * only true if skipToTheEnd is called.
+     */
+    public boolean isSkipping() {
+        return skipping;
+    }
+
     /** Returns whether or not this label is paused. */
     public boolean isPaused() {
         return paused;
