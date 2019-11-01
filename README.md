@@ -36,7 +36,6 @@ api "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
 Add this to your _GdxDefinition.gwt.xml_ file:
 ```xml
 <inherits name="com.rafaskoberg.gdx.typinglabel.typinglabel" />
-<inherits name="regexodus"/>
 ```
 
 Add this to your _build.gradle_ html dependencies:
