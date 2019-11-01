@@ -657,8 +657,7 @@ public class TypingLabel extends Label {
         }
 
         float textWidth, textHeight;
-        // if (wrap || text.indexOf("\n") != -1)
-        {
+        if(wrap || text.indexOf("\n") != -1) {
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
             layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
             textWidth = layout.width;
@@ -670,9 +669,9 @@ public class TypingLabel extends Label {
                 else
                     x += (width - textWidth) / 2;
             }
-            // } else {
-            // textWidth = width;
-            // textHeight = font.getData().capHeight;
+        } else {
+            textWidth = width;
+            textHeight = font.getData().capHeight;
         }
 
         if((labelAlign & Align.top) != 0) {
@@ -686,9 +685,9 @@ public class TypingLabel extends Label {
         }
         if(!cache.getFont().isFlipped()) y += textHeight;
 
-        // Don't set the layout or cache now, since we progressively update both over time.
-        // layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
-        // cache.setText(layout, x, y);
+        layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+        cache.setText(layout, x, y);
+
         if(fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 
         // --- END OF SUPERCLASS IMPLEMENTATION ---
