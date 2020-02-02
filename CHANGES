@@ -6,6 +6,7 @@
 - Fixed some issues related to extreme frame rates, both high and low. Now the effects should remain the same independent of the FPS.
 - Fixed color tokens not detecting hex codes without a hash character.
 - Added new SLIDE effect.
+- Added new HANG effect.
 
 [1.1.0]
 - Added global variables that can be set in TypingConfig.GLOBAL_VARS.
