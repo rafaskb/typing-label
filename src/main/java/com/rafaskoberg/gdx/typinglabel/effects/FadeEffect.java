@@ -47,10 +47,7 @@ public class FadeEffect extends Effect {
     protected void onApply(TypingGlyph glyph, int localIndex, float delta) {
         // Calculate progress
         float timePassed = timePassedByGlyphIndex.getAndIncrement(localIndex, 0, delta);
-        float progress = timePassed / fadeDuration;
-        if(progress < 0 || progress > 1) {
-            return;
-        }
+        float progress = MathUtils.clamp(timePassed / fadeDuration, 0, 1);
 
         // Create glyph color if necessary
         if(glyph.color == null) {

@@ -2,6 +2,7 @@
 package com.rafaskoberg.gdx.typinglabel.effects;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.IntFloatMap;
 import com.rafaskoberg.gdx.typinglabel.Effect;
 import com.rafaskoberg.gdx.typinglabel.TypingGlyph;
@@ -44,10 +45,7 @@ public class EaseEffect extends Effect {
 
         // Calculate progress
         float timePassed = timePassedByGlyphIndex.getAndIncrement(localIndex, 0, delta);
-        float progress = timePassed / realIntensity;
-        if(progress < 0 || progress > 1) {
-            return;
-        }
+        float progress = MathUtils.clamp(timePassed / realIntensity, 0, 1);
 
         // Calculate offset
         Interpolation interpolation = elastic ? Interpolation.swingOut : Interpolation.sine;
