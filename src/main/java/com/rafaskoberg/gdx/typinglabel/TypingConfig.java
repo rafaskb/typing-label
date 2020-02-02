@@ -8,6 +8,7 @@ import com.rafaskoberg.gdx.typinglabel.effects.BlinkEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.EaseEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.FadeEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.GradientEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.HangEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.RainbowEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
@@ -107,16 +108,17 @@ public class TypingConfig {
 
         // Register default tokens
         registerEffect("EASE", "ENDEASE", EaseEffect.class);
+        registerEffect("HANG", "ENDHANG", HangEffect.class);
         registerEffect("JUMP", "ENDJUMP", JumpEffect.class);
         registerEffect("SHAKE", "ENDSHAKE", ShakeEffect.class);
         registerEffect("SICK", "ENDSICK", SickEffect.class);
+        registerEffect("SLIDE", "ENDSLIDE", SlideEffect.class);
         registerEffect("WAVE", "ENDWAVE", WaveEffect.class);
         registerEffect("WIND", "ENDWIND", WindEffect.class);
         registerEffect("RAINBOW", "ENDRAINBOW", RainbowEffect.class);
         registerEffect("GRADIENT", "ENDGRADIENT", GradientEffect.class);
         registerEffect("FADE", "ENDFADE", FadeEffect.class);
         registerEffect("BLINK", "ENDBLINK", BlinkEffect.class);
-        registerEffect("SLIDE", "ENDSLIDE", SlideEffect.class);
     }
 
 }
