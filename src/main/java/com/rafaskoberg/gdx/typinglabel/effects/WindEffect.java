@@ -1,7 +1,6 @@
 
 package com.rafaskoberg.gdx.typinglabel.effects;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.rafaskoberg.gdx.typinglabel.Effect;
 import com.rafaskoberg.gdx.typinglabel.TypingGlyph;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
@@ -14,6 +13,7 @@ public class WindEffect extends Effect {
     private static final float DEFAULT_INTENSITY = 0.375f;
     private static final float DISTANCE_X_RATIO  = 1.5f;
     private static final float DISTANCE_Y_RATIO  = 1.0f;
+    private static final float IDEAL_DELTA       = 1 / 60f;
 
     private SimplexNoise noise        = new SimplexNoise(6, 0, 1f);
     private float        noiseCursorX = 0;
@@ -58,8 +58,9 @@ public class WindEffect extends Effect {
         super.update(delta);
 
         // Update noise cursor
-        noiseCursorX += 0.1f * intensity * DEFAULT_INTENSITY;
-        noiseCursorY += 0.1f * intensity * DEFAULT_INTENSITY;
+        float deltaFactor = delta / IDEAL_DELTA;
+        noiseCursorX += 0.1f * intensity * DEFAULT_INTENSITY * deltaFactor;
+        noiseCursorY += 0.1f * intensity * DEFAULT_INTENSITY * deltaFactor;
     }
 
     @Override
