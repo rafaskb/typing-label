@@ -12,6 +12,7 @@ import com.rafaskoberg.gdx.typinglabel.effects.JumpEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.RainbowEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.ShakeEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.SickEffect;
+import com.rafaskoberg.gdx.typinglabel.effects.SlideEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.WaveEffect;
 import com.rafaskoberg.gdx.typinglabel.effects.WindEffect;
 
@@ -115,6 +116,7 @@ public class TypingConfig {
         registerEffect("GRADIENT", "ENDGRADIENT", GradientEffect.class);
         registerEffect("FADE", "ENDFADE", FadeEffect.class);
         registerEffect("BLINK", "ENDBLINK", BlinkEffect.class);
+        registerEffect("SLIDE", "ENDSLIDE", SlideEffect.class);
     }
 
 }

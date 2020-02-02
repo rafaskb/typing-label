@@ -155,7 +155,7 @@ public class TypingLabelTest extends ApplicationAdapter {
             public void event(String event) {
                 System.out.println("Event: " + event);
 
-                labelEvent.restart("{FASTER}{COLOR=GRAY}Event:{WAIT=0.1}{COLOR=LIME} " + event);
+                labelEvent.restart("{FADE}{SLIDE=2;1;1}{FASTER}{COLOR=GRAY}Event:{WAIT=0.1}{COLOR=LIME} " + event);
                 labelEvent.clearActions();
                 labelEvent.addAction(
                     sequence(
