@@ -4,6 +4,7 @@
 - Fixed longer texts not being processed correctly after a setText call. Labels will now restart automatically after a setText call and will also skip to the end in case their progression has already ended.
 - Fixed issue causing labels not to align properly to the X axis.
 - Fixed some issues related to extreme frame rates, both high and low. Now the effects should remain the same independent of the FPS.
+- Fixed color tokens not detecting hex codes without a hash character.
 
 [1.1.0]
 - Added global variables that can be set in TypingConfig.GLOBAL_VARS.

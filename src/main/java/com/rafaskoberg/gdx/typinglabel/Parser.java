@@ -14,7 +14,8 @@ import regexodus.REFlags;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static final Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static final Pattern PATTERN_MARKUP_STRIP      = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static final Pattern PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
 
     private static final String[] BOOLEAN_TRUE = {"true", "yes", "t", "y", "on", "1"};
     private static final int      INDEX_TOKEN  = 1;
@@ -320,7 +321,21 @@ class Parser {
 
     /** Encloses the given string in brackets to work as a regular color markup tag. */
     private static String stringToColorMarkup(String str) {
-        if(str != null) str = str.toUpperCase();
+        if(str != null) {
+            // Upper case
+            str = str.toUpperCase();
+
+            // If color isn't registered by name, try to parse it as an hex code.
+            Color namedColor = Colors.get(str);
+            if(namedColor == null) {
+                boolean isHexWithoutHashChar = str.length() >= 6 && PATTERN_COLOR_HEX_NO_HASH.matches(str);
+                if(isHexWithoutHashChar) {
+                    str = "#" + str;
+                }
+            }
+        }
+
+        // Return color code
         return "[" + str + "]";
     }
 
