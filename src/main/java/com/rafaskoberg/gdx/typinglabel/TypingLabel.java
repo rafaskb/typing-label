@@ -29,9 +29,6 @@ public class TypingLabel extends Label {
     /// --- Members --- ///
     ///////////////////////
 
-    // Constants
-    private static final float MAXIMUM_DELTA_TIME = 5f / 60f;
-
     // Collections
     private final   ObjectMap<String, String> variables    = new ObjectMap<String, String>();
     protected final Array<TokenEntry>         tokenEntries = new Array<TokenEntry>();
@@ -376,10 +373,6 @@ public class TypingLabel extends Label {
 
     @Override
     public void act(float delta) {
-        // Limit minimum FPS
-        delta = Math.min(delta, MAXIMUM_DELTA_TIME);
-
-        // Superclass
         super.act(delta);
 
         // Force token parsing
