@@ -1,4 +1,4 @@
-[Unreleased]
+[1.2.0]
 - API Addition: Added isSkipping method to TypingLabel class.
 - Fixed exception being thrown when parsing malformed color values from token arguments.
 - Fixed longer texts not being processed correctly after a setText call. Labels will now restart automatically after a setText call and will also skip to the end in case their progression has already ended.
