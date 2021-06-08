@@ -27,6 +27,21 @@ public class TypingConfig {
      */
     public static boolean FORCE_COLOR_MARKUP_BY_DEFAULT = true;
 
+
+    /**
+     * The tag to signify the opening of a token in text. Default is {.
+     *
+     * This must be set through Parser#setOpeningClosing
+     */
+    public static char OPEN_CHAR = '{';
+
+    /**
+     * The tag to signify the closing of a token in text. Default is {.
+     *
+     * This must be set through Parser#setOpeningClosing
+     */
+    public static char CLOSE_CHAR = '}';
+
     /** Default time in seconds that an empty {@code WAIT} token should wait for. Default value is {@code 0.250}. */
     public static float DEFAULT_WAIT_VALUE = 0.250f;
 
