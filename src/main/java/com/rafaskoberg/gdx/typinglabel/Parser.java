@@ -14,14 +14,16 @@ import regexodus.REFlags;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static final Pattern PATTERN_MARKUP_STRIP      = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+
+    private static  Pattern  PATTERN_TOKEN_STRIP  = compileTokenPattern();
+    private static  Pattern  PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+
     private static final Pattern PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
 
     private static final String[] BOOLEAN_TRUE = {"true", "yes", "t", "y", "on", "1"};
     private static final int      INDEX_TOKEN  = 1;
     private static final int      INDEX_PARAM  = 2;
 
-    private static Pattern PATTERN_TOKEN_STRIP;
     private static String  RESET_REPLACEMENT;
 
     /** Parses all tokens from the given {@link TypingLabel}. */
@@ -345,7 +347,7 @@ class Parser {
      */
     private static Pattern compileTokenPattern() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\\{(");
+        sb.append("\\"+TypingConfig.OPEN_CHAR+"(");
         Array<String> tokens = new Array<>();
         TypingConfig.EFFECT_START_TOKENS.keys().toArray(tokens);
         TypingConfig.EFFECT_END_TOKENS.keys().toArray(tokens);
@@ -356,7 +358,7 @@ class Parser {
             sb.append(tokens.get(i));
             if((i + 1) < tokens.size) sb.append('|');
         }
-        sb.append(")(?:=([;#-_ \\.\\w]+))?\\}");
+        sb.append(")(?:=([;#-_ \\.\\w]+))?\\"+TypingConfig.CLOSE_CHAR);
         return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 
@@ -369,9 +371,22 @@ class Parser {
 
         StringBuilder sb = new StringBuilder();
         for(String token : tokens) {
-            sb.append('{').append(token).append('}');
+            sb.append(TypingConfig.OPEN_CHAR).append(token).append(TypingConfig.CLOSE_CHAR);
         }
         return sb.toString();
+    }
+
+    /***
+     * Set the tags that should be used to parse typing
+     * @param open
+     * @param close
+     */
+    public static void setOpeningClosing(char open, char close){
+        TypingConfig.OPEN_CHAR = open;
+        TypingConfig.CLOSE_CHAR = close;
+
+        PATTERN_TOKEN_STRIP  = compileTokenPattern();
+        RESET_REPLACEMENT = getResetReplacement();
     }
 
 }
