@@ -51,6 +51,13 @@ public class TypingLabelTest extends ApplicationAdapter {
 
         label = createTypingLabel();
 
+        /***
+         * Uncomment the following lines to test the feature of allowing different open/closing tags.
+         */
+        //Parser.setOpeningClosing('~','~');
+        //adjustTypingConfigs();
+        //label = createTypingLabel("modified_tag_script.txt");
+
         labelEvent = new TypingLabel("", skin);
         labelEvent.setAlignment(Align.left, Align.center);
         labelEvent.pause();
@@ -120,7 +127,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT = true;
 
         // Create some global variables to handle style
-        TypingConfig.GLOBAL_VARS.put("FIRE_WIND", "{FASTER}{GRADIENT=ORANGE;DB6600;-0.5;5}{SLOWER}{WIND=2;4;0.5;0.5}");
+        TypingConfig.GLOBAL_VARS.put("FIRE_WIND", ""+TypingConfig.OPEN_CHAR+"FASTER"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"GRADIENT=ORANGE;DB6600;-0.5;5"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"SLOWER"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"WIND=2;4;0.5;0.5"+TypingConfig.CLOSE_CHAR+"");
     }
 
     public TypingLabel createTypingLabel() {
@@ -165,6 +172,60 @@ public class TypingLabelTest extends ApplicationAdapter {
                         delay(0.5f),
                         alpha(0, 2f, Interpolation.pow2)
                     )
+                );
+            }
+
+            @Override
+            public void end() {
+                System.out.println("End");
+            }
+        });
+
+        // Finally parse tokens in the label text.
+        label.parseTokens();
+
+        return label;
+    }
+
+    /***
+     * Create a typing-label, except with a specified scriptName that corresponds to a fileName on the classpath,
+     * that will be loaded, and the typing label will be filled with it's contents.
+     *
+     * Intended to allow tests to be loaded from text files instead of hard coded.
+     *
+     * @return The typing label filled with the contents of the file at scriptName
+     */
+    public TypingLabel createTypingLabel(String scriptName) {
+
+        //Very strange replace needed, but it's needed. not sure if its my text file or a libgdx thing.
+        String text =Gdx.files.internal(scriptName).readString().replace("\\n","\n");
+
+        // Create label
+        final TypingLabel label = new TypingLabel(text, skin);
+        label.setDefaultToken(""+TypingConfig.OPEN_CHAR+"EASE"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"FADE=0;1;0.33"+TypingConfig.CLOSE_CHAR+"");
+
+        // Make the label wrap to new lines, respecting the table's layout.
+        label.setWrap(true);
+
+        // Set variable replacements for the {VAR} token
+        label.setVariable("title", "curious human");
+
+        // Set an event listener for when the {EVENT} token is reached and for the char progression ends.
+        label.setTypingListener(new TypingAdapter() {
+            @Override
+            public void event(String event) {
+                System.out.println("Event: " + event);
+
+                labelEvent.restart(""+TypingConfig.OPEN_CHAR+"FADE"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"SLIDE=2;1;1"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"FASTER"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"COLOR=GRAY"+TypingConfig.CLOSE_CHAR+"Event:"+TypingConfig.OPEN_CHAR+"WAIT=0.1"+TypingConfig.CLOSE_CHAR+""+TypingConfig.OPEN_CHAR+"COLOR=LIME"+TypingConfig.CLOSE_CHAR+" " + event);
+                labelEvent.clearActions();
+                labelEvent.addAction(
+                        sequence(
+                                visible(true),
+                                alpha(0),
+                                alpha(1, 0.25f, Interpolation.pow2In),
+                                delay(0.5f),
+                                alpha(0, 2f, Interpolation.pow2)
+                        )
                 );
             }
 
