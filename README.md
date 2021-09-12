@@ -18,7 +18,7 @@ Open _build.gradle_ in project root and add this to the _ext_ section under _all
 
 ```groovy
 typingLabelVersion = '1.2.0'
-regExodusVersion = '0.1.10' // Only if you're using HTML / GWT
+regExodusVersion = '0.1.12' // Only if you're using HTML / GWT
 ```
 
 #### Core module

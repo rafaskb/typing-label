@@ -1,30 +1,25 @@
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
-        jcenter()
-        maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.17.0'
     }
 }
 
 apply plugin: 'java-library'
-apply plugin: 'com.bmuschko.nexus'
-apply plugin: 'io.codearte.nexus-staging'
-apply from: 'publish.gradle'
+apply plugin: 'com.vanniktech.maven.publish'
 
 sourceCompatibility = 1.7
 
 def projectName = 'typing-label'
-version '1.2.0'
+version "$VERSION_NAME"
 group 'com.rafaskoberg.gdx'
 
-def gdxVersion = '1.9.9'
-def regExodusVersion = '0.1.10'
-
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 // Disable JDK 8's doclint
 // http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
@@ -33,20 +28,34 @@ if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
             // The -quiet is because of some sort of weird JDK JavaCompiler bug:
             // https://discuss.gradle.org/t/passing-arguments-to-compiler-and-javadoc/1661
-            options.addStringOption('Xdoclint:all,-missing', '-quiet')
+            options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
     }
 }
 
+if(JavaVersion.current().isJava9Compatible()) {
+    allprojects {
+        tasks.withType(JavaCompile) {
+            options.release.set(7)
+        }
+    }
+}
+
+sourceSets.test.resources.srcDirs = [ file('src/test/resources').path ]
+
+javadoc.destinationDir = file('docs/apidocs')
+
 jar {
-    baseName = projectName
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    archiveBaseName.set(projectName)
     manifest {
-        attributes 'Implementation-Title': projectName, 'Implementation-Version': version
+        attributes 'Implementation-Title': projectName, 'Implementation-Version': archiveVersion
     }
 }
 
 repositories {
     mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
