@@ -66,7 +66,7 @@ class GlyphUtils {
         glyph.kerning = null;
         glyph.fixedWidth = false;
 
-        glyph.run = null;
+        glyph.runColor = 0xFFFFFFFF;
         glyph.internalIndex = -1;
         glyph.color = null;
     }
@@ -88,7 +88,7 @@ class GlyphUtils {
         to.kerning = from.kerning; // Keep the same instance, there's no reason to deep clone it
         to.fixedWidth = from.fixedWidth;
 
-        to.run = null;
+        to.runColor = 0xFFFFFFFF;
         to.internalIndex = -1;
         to.color = null;
     }

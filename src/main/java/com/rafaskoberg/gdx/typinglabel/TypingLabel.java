@@ -710,6 +710,7 @@ public class TypingLabel extends Label {
         BitmapFontCache cache = getBitmapFontCache();
         GlyphLayout layout = super.getGlyphLayout();
         Array<GlyphRun> runs = layout.runs;
+        IntArray colors = layout.colors;
 
         // Reset layout line breaks
         layoutLineBreaks.clear();
@@ -732,6 +733,11 @@ public class TypingLabel extends Label {
         // Clone original glyphs with independent instances
         int index = -1;
         float lastY = 0;
+
+        int colorIndex = 1;
+        int currentColor = colors.size < 2 ? 0xFFFFFFFF : colors.get(1);
+        int colorChange = colors.size < 4 ? glyphCount : colors.get(2);
+
         for(int i = 0; i < runs.size; i++) {
             GlyphRun run = runs.get(i);
             Array<Glyph> glyphs = run.glyphs;
@@ -745,6 +751,11 @@ public class TypingLabel extends Label {
 
                 // Increment index
                 index++;
+                if(index > colorChange && colorIndex + 2 < colors.size)
+                {
+                    currentColor = colors.get(colorIndex += 2);
+                    colorChange = colors.size <= colorIndex + 2 ? glyphCount : colors.get(colorIndex + 1);
+                }
 
                 // Get original glyph
                 Glyph original = glyphs.get(j);
@@ -763,7 +774,7 @@ public class TypingLabel extends Label {
                 clone.height *= getFontScaleY();
                 clone.xoffset *= getFontScaleX();
                 clone.yoffset *= getFontScaleY();
-                clone.run = run;
+                clone.runColor = currentColor;
 
                 // Store offset data
                 offsetCache.set(index * 2, clone.xoffset);
