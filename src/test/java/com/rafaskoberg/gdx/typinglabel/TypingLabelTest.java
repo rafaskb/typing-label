@@ -197,8 +197,7 @@ public class TypingLabelTest extends ApplicationAdapter {
      */
     public TypingLabel createTypingLabel(String scriptName) {
 
-        //Very strange replace needed, but it's needed. not sure if its my text file or a libgdx thing.
-        String text =Gdx.files.internal(scriptName).readString().replace("\\n","\n");
+        String text =Gdx.files.internal(scriptName).readString();
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
