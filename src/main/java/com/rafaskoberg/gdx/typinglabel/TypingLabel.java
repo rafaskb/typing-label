@@ -473,7 +473,7 @@ public class TypingLabel extends Label {
             }
 
             // Increase glyph char index for all characters, except new lines.
-            if(rawCharIndex >= 0 && primitiveChar != '\n' && !isLayoutLineBreak) glyphCharIndex++;
+            if(rawCharIndex >= 0 && primitiveChar != '\n' && primitiveChar != '\r' && !isLayoutLineBreak) glyphCharIndex++;
 
             // Process tokens according to the current index
             while(tokenEntries.size > 0 && tokenEntries.peek().index == rawCharIndex) {
