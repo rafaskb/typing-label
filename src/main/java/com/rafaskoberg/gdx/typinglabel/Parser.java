@@ -15,8 +15,8 @@ import regexodus.REFlags;
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
 
-    private static  Pattern  PATTERN_TOKEN_STRIP  = compileTokenPattern();
-    private static  Pattern  PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static Pattern PATTERN_TOKEN_STRIP  = compileTokenPattern();
+    private static Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
 
     private static final Pattern PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
 
@@ -24,7 +24,7 @@ class Parser {
     private static final int      INDEX_TOKEN  = 1;
     private static final int      INDEX_PARAM  = 2;
 
-    private static String  RESET_REPLACEMENT;
+    private static String RESET_REPLACEMENT;
 
     /** Parses all tokens from the given {@link TypingLabel}. */
     static void parseTokens(TypingLabel label) {
@@ -342,8 +342,8 @@ class Parser {
     }
 
     /**
-     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional
-     * second one. Case insensitive.
+     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional second one. Case
+     * insensitive.
      */
     private static Pattern compileTokenPattern() {
         StringBuilder sb = new StringBuilder();
@@ -381,7 +381,7 @@ class Parser {
      * @param open
      * @param close
      */
-    public static void setOpeningClosing(char open, char close){
+    public static void setOpeningClosing(char open, char close) {
         TypingConfig.OPEN_CHAR = open;
         TypingConfig.CLOSE_CHAR = close;
 
