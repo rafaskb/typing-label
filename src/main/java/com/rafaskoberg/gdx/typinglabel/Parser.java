@@ -342,12 +342,14 @@ class Parser {
     }
 
     /**
-     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional second one. Case
-     * insensitive.
+     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional
+     * second one. Case insensitive.
      */
     private static Pattern compileTokenPattern() {
+        final char cOpen = TypingConfig.OPEN_CHAR;
+        final char cClose = TypingConfig.CLOSE_CHAR;
         StringBuilder sb = new StringBuilder();
-        sb.append("\\"+TypingConfig.OPEN_CHAR+"(");
+        sb.append("\\").append(cOpen).append("(");
         Array<String> tokens = new Array<>();
         TypingConfig.EFFECT_START_TOKENS.keys().toArray(tokens);
         TypingConfig.EFFECT_END_TOKENS.keys().toArray(tokens);
@@ -358,7 +360,7 @@ class Parser {
             sb.append(tokens.get(i));
             if((i + 1) < tokens.size) sb.append('|');
         }
-        sb.append(")(?:=([;#-_ \\.\\w]+))?\\"+TypingConfig.CLOSE_CHAR);
+        sb.append(")(?:=([;:?^_ #-'*-.\\.\\w]+))?\\").append(cClose);
         return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 
@@ -385,7 +387,7 @@ class Parser {
         TypingConfig.OPEN_CHAR = open;
         TypingConfig.CLOSE_CHAR = close;
 
-        PATTERN_TOKEN_STRIP  = compileTokenPattern();
+        PATTERN_TOKEN_STRIP = compileTokenPattern();
         RESET_REPLACEMENT = getResetReplacement();
     }
 

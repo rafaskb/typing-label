@@ -35,6 +35,8 @@ public class TypingLabelTest extends ApplicationAdapter {
 
     @Override
     public void create() {
+        // Adjust typing config
+        Parser.setOpeningClosing('{', '}');
         adjustTypingConfigs();
 
         batch = new SpriteBatch();
