@@ -54,6 +54,9 @@ public class TypingConfig {
     /** Default color for the {@code CLEARCOLOR} token. Can be overriden by {@link TypingLabel#getClearColor()}. */
     public static Color DEFAULT_CLEAR_COLOR = new Color(Color.WHITE);
 
+    /** Characters used to start and end tokens. Defaults to {@link TokenDelimiter#CURLY_BRACKETS}.*/
+    public static TokenDelimiter TOKEN_DELIMITER = TokenDelimiter.CURLY_BRACKETS;
+
     /**
      * Returns a map of characters and their respective interval multipliers, of which the interval to the next char
      * should be multiplied for.

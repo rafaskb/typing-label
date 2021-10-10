@@ -14,23 +14,31 @@ import regexodus.REFlags;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static final Pattern PATTERN_MARKUP_STRIP      = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static TokenDelimiter CURRENT_DELIMITER    = TypingConfig.TOKEN_DELIMITER;
+    private static Pattern        PATTERN_TOKEN_STRIP  = compileTokenPattern();
+    private static Pattern        PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+
     private static final Pattern PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
 
     private static final String[] BOOLEAN_TRUE = {"true", "yes", "t", "y", "on", "1"};
     private static final int      INDEX_TOKEN  = 1;
     private static final int      INDEX_PARAM  = 2;
 
-    private static Pattern PATTERN_TOKEN_STRIP;
-    private static String  RESET_REPLACEMENT;
+    private static String RESET_REPLACEMENT;
 
     /** Parses all tokens from the given {@link TypingLabel}. */
     static void parseTokens(TypingLabel label) {
+        // Detect if token delimiter has changed
+        boolean hasDelimiterChanged = CURRENT_DELIMITER != TypingConfig.TOKEN_DELIMITER;
+        if(hasDelimiterChanged) {
+            CURRENT_DELIMITER = TypingConfig.TOKEN_DELIMITER;
+        }
+
         // Compile patterns if necessary
-        if(PATTERN_TOKEN_STRIP == null || TypingConfig.dirtyEffectMaps) {
+        if(PATTERN_TOKEN_STRIP == null || TypingConfig.dirtyEffectMaps || hasDelimiterChanged) {
             PATTERN_TOKEN_STRIP = compileTokenPattern();
         }
-        if(RESET_REPLACEMENT == null || TypingConfig.dirtyEffectMaps) {
+        if(RESET_REPLACEMENT == null || TypingConfig.dirtyEffectMaps || hasDelimiterChanged) {
             RESET_REPLACEMENT = getResetReplacement();
         }
 
@@ -340,12 +348,12 @@ class Parser {
     }
 
     /**
-     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional
-     * second one. Case insensitive.
+     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional second one. Case
+     * insensitive.
      */
     private static Pattern compileTokenPattern() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\\{(");
+        sb.append("\\").append(CURRENT_DELIMITER.open).append("(");
         Array<String> tokens = new Array<>();
         TypingConfig.EFFECT_START_TOKENS.keys().toArray(tokens);
         TypingConfig.EFFECT_END_TOKENS.keys().toArray(tokens);
@@ -356,7 +364,7 @@ class Parser {
             sb.append(tokens.get(i));
             if((i + 1) < tokens.size) sb.append('|');
         }
-        sb.append(")(?:=([;#-_ \\.\\w]+))?\\}");
+        sb.append(")(?:=([;:?^_ #-'*-.\\.\\w]+))?\\").append(CURRENT_DELIMITER.close);
         return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 
@@ -369,7 +377,7 @@ class Parser {
 
         StringBuilder sb = new StringBuilder();
         for(String token : tokens) {
-            sb.append('{').append(token).append('}');
+            sb.append(CURRENT_DELIMITER.open).append(token).append(CURRENT_DELIMITER.close);
         }
         return sb.toString();
     }
