@@ -1,3 +1,7 @@
+[1.3.0-SNAPSHOT]
+- Fixed Windows line breaks (CR/LF) causing effect tokens to skip characters. This was mostly noticeable when loading strings from a text file.
+- Added `TokenDelimiter` configuration to `TypingConfig`, allowing users to change the token syntax. {CurlyBrackets}, [Brackets], and (Parentheses) are supported.
+
 [1.2.0]
 - API Addition: Added isSkipping method to TypingLabel class.
 - Fixed exception being thrown when parsing malformed color values from token arguments.
