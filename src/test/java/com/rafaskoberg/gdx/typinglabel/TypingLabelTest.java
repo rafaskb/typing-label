@@ -36,7 +36,6 @@ public class TypingLabelTest extends ApplicationAdapter {
     @Override
     public void create() {
         // Adjust typing config
-        Parser.setOpeningClosing('{', '}');
         adjustTypingConfigs();
 
         batch = new SpriteBatch();
@@ -123,8 +122,8 @@ public class TypingLabelTest extends ApplicationAdapter {
         TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT = true;
 
         // Get token constants
-        final char cOpen = TypingConfig.OPEN_CHAR;
-        final char cClose = TypingConfig.CLOSE_CHAR;
+        final char cOpen = TypingConfig.TOKEN_DELIMITER.open;
+        final char cClose = TypingConfig.TOKEN_DELIMITER.close;
 
         // Create FIRE_WIND token as a global variable
         String fireWindToken = "{FASTER}{GRADIENT=ORANGE;DB6600;-0.5;5}{SLOWER}{WIND=2;4;0.5;0.5}".replace('{', cOpen).replace('}', cClose);
@@ -145,8 +144,8 @@ public class TypingLabelTest extends ApplicationAdapter {
      */
     public TypingLabel createTypingLabel(String filename) {
         // Get token constants
-        final char cOpen = TypingConfig.OPEN_CHAR;
-        final char cClose = TypingConfig.CLOSE_CHAR;
+        final char cOpen = TypingConfig.TOKEN_DELIMITER.open;
+        final char cClose = TypingConfig.TOKEN_DELIMITER.close;
 
         // Get text
         String text = Gdx.files.internal("text/" + filename).readString();

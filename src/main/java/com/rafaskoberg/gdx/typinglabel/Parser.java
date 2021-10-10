@@ -14,9 +14,9 @@ import regexodus.REFlags;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-
-    private static Pattern PATTERN_TOKEN_STRIP  = compileTokenPattern();
-    private static Pattern PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static TokenDelimiter CURRENT_DELIMITER    = TypingConfig.TOKEN_DELIMITER;
+    private static Pattern        PATTERN_TOKEN_STRIP  = compileTokenPattern();
+    private static Pattern        PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
 
     private static final Pattern PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
 
@@ -28,11 +28,17 @@ class Parser {
 
     /** Parses all tokens from the given {@link TypingLabel}. */
     static void parseTokens(TypingLabel label) {
+        // Detect if token delimiter has changed
+        boolean hasDelimiterChanged = CURRENT_DELIMITER != TypingConfig.TOKEN_DELIMITER;
+        if(hasDelimiterChanged) {
+            CURRENT_DELIMITER = TypingConfig.TOKEN_DELIMITER;
+        }
+
         // Compile patterns if necessary
-        if(PATTERN_TOKEN_STRIP == null || TypingConfig.dirtyEffectMaps) {
+        if(PATTERN_TOKEN_STRIP == null || TypingConfig.dirtyEffectMaps || hasDelimiterChanged) {
             PATTERN_TOKEN_STRIP = compileTokenPattern();
         }
-        if(RESET_REPLACEMENT == null || TypingConfig.dirtyEffectMaps) {
+        if(RESET_REPLACEMENT == null || TypingConfig.dirtyEffectMaps || hasDelimiterChanged) {
             RESET_REPLACEMENT = getResetReplacement();
         }
 
@@ -342,12 +348,12 @@ class Parser {
     }
 
     /**
-     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional
-     * second one. Case insensitive.
+     * Returns a compiled {@link Pattern} that groups the token name in the first group and the params in an optional second one. Case
+     * insensitive.
      */
     private static Pattern compileTokenPattern() {
-        final char cOpen = TypingConfig.OPEN_CHAR;
-        final char cClose = TypingConfig.CLOSE_CHAR;
+        final char cOpen = CURRENT_DELIMITER.open;
+        final char cClose = CURRENT_DELIMITER.close;
         StringBuilder sb = new StringBuilder();
         sb.append("\\").append(cOpen).append("(");
         Array<String> tokens = new Array<>();
@@ -373,22 +379,9 @@ class Parser {
 
         StringBuilder sb = new StringBuilder();
         for(String token : tokens) {
-            sb.append(TypingConfig.OPEN_CHAR).append(token).append(TypingConfig.CLOSE_CHAR);
+            sb.append(CURRENT_DELIMITER.open).append(token).append(CURRENT_DELIMITER.close);
         }
         return sb.toString();
-    }
-
-    /***
-     * Set the tags that should be used to parse typing
-     * @param open
-     * @param close
-     */
-    public static void setOpeningClosing(char open, char close) {
-        TypingConfig.OPEN_CHAR = open;
-        TypingConfig.CLOSE_CHAR = close;
-
-        PATTERN_TOKEN_STRIP = compileTokenPattern();
-        RESET_REPLACEMENT = getResetReplacement();
     }
 
 }

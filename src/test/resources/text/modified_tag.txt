@@ -1,6 +1,0 @@
-<WAIT=1><SLOWER><GRADIENT=FF70F1;FFC300;-0.5;5><EASE=-8;2;1>Welcome,<WAIT> <VAR=title>!<ENDEASE><FAST>
-
-<RESET><HANG=0.7>This is a simple test<ENDHANG> to show you<GRADIENT=27C1F5;2776E7;-0.5;5> <JUMP>how to make dialogues <SLOW>fun again! <ENDJUMP><WAIT><ENDGRADIENT>
-<NORMAL><CLEARCOLOR><SICK> With this library<ENDSICK> you can control the flow of the text with <BLINK=FF6BF3;FF0582;3>tokens<ENDBLINK>,<WAIT=0.7><SPEED=2.50><COLOR=#84DD60> making the text go <SHAKE=1;1;3>really fast<ENDSHAKE><WAIT=0.5> <SPEED=0.25><COLOR=#A6E22D><WAVE=0.66>or extremely slow.<ENDWAVE><RESET> You can also wait for a <EASE=-15;2;1>second<ENDEASE><WAIT=1> <EASE=15;8;1><COLOR=#E6DB74>or two<CLEARCOLOR><ENDEASE><WAIT=2>,<RAINBOW=1;1;0.7> just to catch an event in code<EVENT=example>!<WAIT> <ENDHANG><ENDRAINBOW><NORMAL>
-
-<VAR=FIRE_WIND>Imagine the possibilities! =D <RESET>

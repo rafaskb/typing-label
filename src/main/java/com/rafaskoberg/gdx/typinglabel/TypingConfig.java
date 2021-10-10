@@ -27,21 +27,6 @@ public class TypingConfig {
      */
     public static boolean FORCE_COLOR_MARKUP_BY_DEFAULT = true;
 
-
-    /**
-     * The tag to signify the opening of a token in text. Default is {.
-     *
-     * This must be set through Parser#setOpeningClosing
-     */
-    public static char OPEN_CHAR = '{';
-
-    /**
-     * The tag to signify the closing of a token in text. Default is {.
-     *
-     * This must be set through Parser#setOpeningClosing
-     */
-    public static char CLOSE_CHAR = '}';
-
     /** Default time in seconds that an empty {@code WAIT} token should wait for. Default value is {@code 0.250}. */
     public static float DEFAULT_WAIT_VALUE = 0.250f;
 
@@ -68,6 +53,9 @@ public class TypingConfig {
 
     /** Default color for the {@code CLEARCOLOR} token. Can be overriden by {@link TypingLabel#getClearColor()}. */
     public static Color DEFAULT_CLEAR_COLOR = new Color(Color.WHITE);
+
+    /** Characters used to start and end tokens. Defaults to {@link TokenDelimiter#CURLY_BRACKETS}.*/
+    public static TokenDelimiter TOKEN_DELIMITER = TokenDelimiter.CURLY_BRACKETS;
 
     /**
      * Returns a map of characters and their respective interval multipliers, of which the interval to the next char
