@@ -13,9 +13,9 @@ public class WindEffect extends Effect {
     private static final float DEFAULT_INTENSITY = 0.375f;
     private static final float DISTANCE_X_RATIO  = 1.5f;
     private static final float DISTANCE_Y_RATIO  = 1.0f;
-    private static final float IDEAL_DELTA       = 1 / 60f;
+    private static final float IDEAL_DELTA       = 60f;
 
-    private SimplexNoise noise        = new SimplexNoise(6, 0, 1f);
+    private SimplexNoise noise        = new SimplexNoise(1, 0.5f, 1f);
     private float        noiseCursorX = 0;
     private float        noiseCursorY = 0;
 
@@ -58,16 +58,16 @@ public class WindEffect extends Effect {
         super.update(delta);
 
         // Update noise cursor
-        float deltaFactor = delta / IDEAL_DELTA;
-        noiseCursorX += 0.1f * intensity * DEFAULT_INTENSITY * deltaFactor;
-        noiseCursorY += 0.1f * intensity * DEFAULT_INTENSITY * deltaFactor;
+        float changeAmount = 0.1f * intensity * DEFAULT_INTENSITY * delta * IDEAL_DELTA;
+        noiseCursorX += changeAmount;
+        noiseCursorY += changeAmount;
     }
 
     @Override
     protected void onApply(TypingGlyph glyph, int localIndex, float delta) {
         // Calculate progress
-        float progressModifier = (1f / intensity) * DEFAULT_INTENSITY;
-        float normalSpacing = (1f / spacing) * DEFAULT_SPACING;
+        float progressModifier = DEFAULT_INTENSITY / intensity;
+        float normalSpacing = DEFAULT_SPACING / spacing;
         float progressOffset = localIndex / normalSpacing;
         float progress = calculateProgress(progressModifier, progressOffset);
 
