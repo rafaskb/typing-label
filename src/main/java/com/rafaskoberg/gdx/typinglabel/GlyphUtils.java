@@ -34,7 +34,7 @@ class GlyphUtils {
 
     /**
      * Puts the specified glyph in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already
-     * contains {@link #max} free glyphs, the specified glyph is reset but not added to the pool.
+     * contains {@link Pool#max} free glyphs, the specified glyph is reset but not added to the pool.
      */
     static void free(TypingGlyph glyph) {
         pool.free(glyph);
@@ -43,7 +43,7 @@ class GlyphUtils {
     /**
      * Puts the specified glyphs in the pool. Null glyphs within the array are silently ignored.
      *
-     * @see #free(Object)
+     * @see Pool#free(Object)
      */
     static void freeAll(Array<TypingGlyph> glyphs) {
         pool.freeAll(glyphs);
