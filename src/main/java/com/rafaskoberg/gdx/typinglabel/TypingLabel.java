@@ -449,8 +449,7 @@ public class TypingLabel extends Label {
             char primitiveChar = '\u0000'; // Null character by default
             if(getText().length > 0) {
                 primitiveChar = getText().charAt(safeIndex);
-                Character ch = Character.valueOf(primitiveChar);
-                float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(ch, 1);
+                float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(primitiveChar, 1);
                 charCooldown += textSpeed * intervalMultiplier;
             }
 
@@ -527,7 +526,6 @@ public class TypingLabel extends Label {
                             activeEffects.add(entry.effect);
                         }
 
-                        continue;
                     }
                 }
             }

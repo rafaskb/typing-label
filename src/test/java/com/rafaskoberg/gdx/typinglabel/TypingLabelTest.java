@@ -215,6 +215,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         config.resizable = false;
         config.foregroundFPS = 60;
         config.backgroundFPS = 60;
+        config.forceExit = false;
 
         new LwjglApplication(new TypingLabelTest(), config);
     }
