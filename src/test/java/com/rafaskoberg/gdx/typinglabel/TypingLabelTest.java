@@ -38,6 +38,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         // Adjust typing config
         adjustTypingConfigs();
 
+        // Initiate batch, skin, and stage
         batch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
@@ -46,18 +47,22 @@ public class TypingLabelTest extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport(), batch);
         Gdx.input.setInputProcessor(stage);
 
+        // Create root table
         final Table table = new Table();
         stage.addActor(table);
         table.setFillParent(true);
 
+        // Create main TypingLabel instance
         final String filename = "default.txt";
         label = createTypingLabel(filename);
 
+        // Create TypingLabel to show events
         labelEvent = new TypingLabel("", skin);
         labelEvent.setAlignment(Align.left, Align.center);
         labelEvent.pause();
         labelEvent.setVisible(false);
 
+        // Pause button
         buttonPause = new TextButton("Pause", skin);
         buttonPause.addListener(new ClickListener() {
             @Override
@@ -66,6 +71,7 @@ public class TypingLabelTest extends ApplicationAdapter {
             }
         });
 
+        // Resume button
         buttonResume = new TextButton("Resume", skin);
         buttonResume.addListener(new ClickListener() {
             @Override
@@ -74,6 +80,7 @@ public class TypingLabelTest extends ApplicationAdapter {
             }
         });
 
+        // Restart button
         buttonRestart = new TextButton("Restart", skin);
         buttonRestart.addListener(new ClickListener() {
             @Override
@@ -82,6 +89,7 @@ public class TypingLabelTest extends ApplicationAdapter {
             }
         });
 
+        // Rebuild button
         buttonRebuild = new TextButton("Rebuild", skin);
         buttonRebuild.addListener(new ClickListener() {
             @Override
@@ -93,6 +101,7 @@ public class TypingLabelTest extends ApplicationAdapter {
             }
         });
 
+        // Skip button
         buttonSkip = new TextButton("Skip", skin);
         buttonSkip.addListener(new ClickListener() {
             @Override
@@ -101,13 +110,13 @@ public class TypingLabelTest extends ApplicationAdapter {
             }
         });
 
+        // Populate table
         table.pad(50f);
         table.add(label).colspan(5).growX();
         table.row();
         table.add(labelEvent).colspan(5).align(Align.center);
         table.row().uniform().expand().growX().space(40).center();
         table.add(buttonPause, buttonResume, buttonRestart, buttonSkip, buttonRebuild);
-
         table.pack();
     }
 

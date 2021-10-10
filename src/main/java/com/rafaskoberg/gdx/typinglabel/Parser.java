@@ -352,10 +352,8 @@ class Parser {
      * insensitive.
      */
     private static Pattern compileTokenPattern() {
-        final char cOpen = CURRENT_DELIMITER.open;
-        final char cClose = CURRENT_DELIMITER.close;
         StringBuilder sb = new StringBuilder();
-        sb.append("\\").append(cOpen).append("(");
+        sb.append("\\").append(CURRENT_DELIMITER.open).append("(");
         Array<String> tokens = new Array<>();
         TypingConfig.EFFECT_START_TOKENS.keys().toArray(tokens);
         TypingConfig.EFFECT_END_TOKENS.keys().toArray(tokens);
@@ -366,7 +364,7 @@ class Parser {
             sb.append(tokens.get(i));
             if((i + 1) < tokens.size) sb.append('|');
         }
-        sb.append(")(?:=([;:?^_ #-'*-.\\.\\w]+))?\\").append(cClose);
+        sb.append(")(?:=([;:?^_ #-'*-.\\.\\w]+))?\\").append(CURRENT_DELIMITER.close);
         return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 
