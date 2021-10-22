@@ -54,3 +54,10 @@ Check the Wiki:
 - [Tokens](https://github.com/rafaskb/typing-label/wiki/Tokens)
 - [Fine tuning](https://github.com/rafaskb/typing-label/wiki/Fine-Tuning)
 - [Custom Effects](https://github.com/rafaskb/typing-label/wiki/Tokens#custom-effects)
+
+## textratypist and SDF / MSDF Support
+_Multi-channel Signed Distance Field_ fonts allow you to prepare and load just one font file and render it in any scale you want, while mantaining the quality and cripsness of the original texture, as if you were working directly with vectors.
+
+Since TypingLabel aims to be a replacement for regular scene2d.ui Labels though, that means it relies on BitmapFonts, which have a specific size and don't work well with scaling.
+
+If you're using SDF fonts in your project and want TypingLabel features, then make sure to take a look at [Textramode](https://github.com/tommyettinger/textramode) and [Textratypist](https://github.com/tommyettinger/textramode) libraries by [Tommy Ettinger](https://github.com/tommyettinger). They support SDF and MSDF fonts, have much of the TypingLabel features, as well extended markup such as bold and oblique, and much more.
