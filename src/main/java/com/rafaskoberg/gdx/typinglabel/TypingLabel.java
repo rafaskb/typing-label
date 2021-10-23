@@ -66,6 +66,7 @@ public class TypingLabel extends Label {
     String  ellipsis;
     float   lastPrefHeight;
     boolean fontScaleChanged = false;
+    private static final Color tempColor = new Color();
 
     ////////////////////////////
     /// --- Constructors --- ///
@@ -861,14 +862,31 @@ public class TypingLabel extends Label {
         BitmapFontCache bitmapFontCache = getBitmapFontCache();
         getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
 
+        // This section has to be copied from Label, since we can't call super.draw() without messing up our color.
+        validate();
+        Color color = tempColor.set(getColor());
+        color.a *= parentAlpha;
+        if (getStyle().background != null) {
+            batch.setColor(color.r, color.g, color.b, color.a);
+            getStyle().background.draw(batch, getX(), getY(), getWidth(), getHeight());
+        }
+        if (getStyle().fontColor != null) color.mul(getStyle().fontColor);
         // Tint glyphs
+
+        // Here we store color as its components, to avoid producing garbage and to allow modifying the local color.
+        float r = color.r, g = color.g, b = color.b, a = color.a;
         for(TypingGlyph glyph : glyphCache) {
             if(glyph.internalIndex >= 0 && glyph.color != null) {
-                bitmapFontCache.setColors(glyph.color, glyph.internalIndex, glyph.internalIndex + 1);
+                // Unless we want to use a packed float, it's easiest to pass a Color object here, multiplying this
+                // Label color (as its components) by the color of the individual glyph.
+                bitmapFontCache.setColors(
+                        color.set(glyph.color).mul(r, g, b, a),
+                        glyph.internalIndex, glyph.internalIndex + 1);
             }
         }
-
-        super.draw(batch, parentAlpha);
+        // This also replicates Label. Note that we don't call the super-method.
+        bitmapFontCache.setPosition(getX(), getY());
+        bitmapFontCache.draw(batch);
     }
 
 }
