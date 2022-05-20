@@ -54,7 +54,6 @@ public class TypingLabelTest extends ApplicationAdapter {
 
         // Create main TypingLabel instance
         final String filename = "default.txt";
-//        final String filename = "issue26.txt"; // Change this to default.txt when not testing this issue
         label = createTypingLabel(filename);
 
         // Create TypingLabel to show events
@@ -162,9 +161,6 @@ public class TypingLabelTest extends ApplicationAdapter {
 
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
-
-        // For issue #26 ; commented out when not testing that issue.
-//        label.getColor().a = 0.5f;
 
         // Set default token
         String defaultToken = "{EASE}{FADE=0;1;0.33}";
