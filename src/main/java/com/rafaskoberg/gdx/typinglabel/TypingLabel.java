@@ -66,6 +66,7 @@ public class TypingLabel extends Label {
     String  ellipsis;
     float   lastPrefHeight;
     boolean fontScaleChanged = false;
+    private static final Color tempColor = new Color();
 
     ////////////////////////////
     /// --- Constructors --- ///
@@ -708,6 +709,7 @@ public class TypingLabel extends Label {
         BitmapFontCache cache = getBitmapFontCache();
         GlyphLayout layout = super.getGlyphLayout();
         Array<GlyphRun> runs = layout.runs;
+        IntArray colors = layout.colors;
 
         // Reset layout line breaks
         layoutLineBreaks.clear();
@@ -730,6 +732,11 @@ public class TypingLabel extends Label {
         // Clone original glyphs with independent instances
         int index = -1;
         float lastY = 0;
+
+        int colorIndex = 1;
+        int currentColor = colors.size < 2 ? 0xFFFFFFFF : colors.get(1);
+        int colorChange = colors.size < 4 ? glyphCount : colors.get(2);
+
         for(int i = 0; i < runs.size; i++) {
             GlyphRun run = runs.get(i);
             Array<Glyph> glyphs = run.glyphs;
@@ -743,6 +750,11 @@ public class TypingLabel extends Label {
 
                 // Increment index
                 index++;
+                if(index > colorChange && colorIndex + 2 < colors.size)
+                {
+                    currentColor = colors.get(colorIndex += 2);
+                    colorChange = colors.size <= colorIndex + 2 ? glyphCount : colors.get(colorIndex + 1);
+                }
 
                 // Get original glyph
                 Glyph original = glyphs.get(j);
@@ -761,7 +773,7 @@ public class TypingLabel extends Label {
                 clone.height *= getFontScaleY();
                 clone.xoffset *= getFontScaleX();
                 clone.yoffset *= getFontScaleY();
-                clone.run = run;
+                clone.runColor = currentColor;
 
                 // Store offset data
                 offsetCache.set(index * 2, clone.xoffset);
@@ -850,14 +862,31 @@ public class TypingLabel extends Label {
         BitmapFontCache bitmapFontCache = getBitmapFontCache();
         getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
 
+        // This section has to be copied from Label, since we can't call super.draw() without messing up our color.
+        validate();
+        Color color = tempColor.set(getColor());
+        color.a *= parentAlpha;
+        if (getStyle().background != null) {
+            batch.setColor(color.r, color.g, color.b, color.a);
+            getStyle().background.draw(batch, getX(), getY(), getWidth(), getHeight());
+        }
+        if (getStyle().fontColor != null) color.mul(getStyle().fontColor);
         // Tint glyphs
+
+        // Here we store color as its components, to avoid producing garbage and to allow modifying the local color.
+        float r = color.r, g = color.g, b = color.b, a = color.a;
         for(TypingGlyph glyph : glyphCache) {
             if(glyph.internalIndex >= 0 && glyph.color != null) {
-                bitmapFontCache.setColors(glyph.color, glyph.internalIndex, glyph.internalIndex + 1);
+                // Unless we want to use a packed float, it's easiest to pass a Color object here, multiplying this
+                // Label color (as its components) by the color of the individual glyph.
+                bitmapFontCache.setColors(
+                        color.set(glyph.color).mul(r, g, b, a),
+                        glyph.internalIndex, glyph.internalIndex + 1);
             }
         }
-
-        super.draw(batch, parentAlpha);
+        // This also replicates Label. Note that we don't call the super-method.
+        bitmapFontCache.setPosition(getX(), getY());
+        bitmapFontCache.draw(batch);
     }
 
 }

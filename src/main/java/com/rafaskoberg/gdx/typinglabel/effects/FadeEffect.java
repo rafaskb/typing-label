@@ -51,7 +51,7 @@ public class FadeEffect extends Effect {
 
         // Create glyph color if necessary
         if(glyph.color == null) {
-            glyph.color = new Color(glyph.run.color);
+            glyph.color = new Color(Integer.reverseBytes(glyph.runColor));
         }
 
         // Calculate initial color
