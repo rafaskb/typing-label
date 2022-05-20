@@ -623,7 +623,7 @@ public class TypingLabel extends Label {
 
     @Override
     public void layout() {
-        // --- SUPERCLASS IMPLEMENTATION (but with accessible getters instead) ---
+        // --- SUPERCLASS IMPLEMENTATION ---
         BitmapFontCache cache = getBitmapFontCache();
         StringBuilder text = getText();
         GlyphLayout layout = super.getGlyphLayout();
@@ -862,6 +862,7 @@ public class TypingLabel extends Label {
         BitmapFontCache bitmapFontCache = getBitmapFontCache();
         getBitmapFontCache().setText(getGlyphLayout(), lastLayoutX, lastLayoutY);
 
+        // --- SUPERCLASS IMPLEMENTATION ---
         // This section has to be copied from Label, since we can't call super.draw() without messing up our color.
         validate();
         Color color = tempColor.set(getColor());
@@ -871,7 +872,7 @@ public class TypingLabel extends Label {
             getStyle().background.draw(batch, getX(), getY(), getWidth(), getHeight());
         }
         if (getStyle().fontColor != null) color.mul(getStyle().fontColor);
-        // Tint glyphs
+        // --- END OF SUPERCLASS IMPLEMENTATION ---
 
         // Here we store color as its components, to avoid producing garbage and to allow modifying the local color.
         float r = color.r, g = color.g, b = color.b, a = color.a;
@@ -884,9 +885,12 @@ public class TypingLabel extends Label {
                         glyph.internalIndex, glyph.internalIndex + 1);
             }
         }
+
+        // --- SUPERCLASS IMPLEMENTATION ---
         // This also replicates Label. Note that we don't call the super-method.
         bitmapFontCache.setPosition(getX(), getY());
         bitmapFontCache.draw(batch);
+        // --- END OF SUPERCLASS IMPLEMENTATION ---
     }
 
 }
