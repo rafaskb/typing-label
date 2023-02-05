@@ -532,7 +532,7 @@ public class TypingLabel extends Label {
             }
 
             // Notify listener about char progression
-            int nextIndex = rawCharIndex == 0 ? 0 : MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
+            int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
             Character nextChar = nextIndex == 0 ? null : getText().charAt(nextIndex);
             if(nextChar != null && listener != null) {
                 listener.onChar(nextChar);
@@ -750,10 +750,10 @@ public class TypingLabel extends Label {
 
                 // Increment index
                 index++;
-                if(index > colorChange && colorIndex + 2 < colors.size)
+                if(index >= colorChange && colorIndex + 2 < colors.size)
                 {
                     currentColor = colors.get(colorIndex += 2);
-                    colorChange = colors.size <= colorIndex + 2 ? glyphCount : colors.get(colorIndex + 1);
+                    colorChange = colors.size <= colorIndex + 1 ? glyphCount : colors.get(colorIndex + 1);
                 }
 
                 // Get original glyph
