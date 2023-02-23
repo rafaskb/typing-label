@@ -1,3 +1,7 @@
+[Unreleased]
+- Updated Regexodus dependency for GWT. If you use GWT and inherit Regexodus in your project, follow the installation instructions again, as some of them have changed (namely the `inherits` line).
+- Fixed color tags being applied to the incorrect glyph indices. Thanks @tommyettinger!
+
 [1.3.0]
 - Fixed Windows line breaks (CR/LF) causing effect tokens to skip characters. This was mostly noticeable when loading strings from a text file.
 - Added `TokenDelimiter` configuration to `TypingConfig`, allowing users to change the token syntax. {CurlyBrackets}, [Brackets], and (Parentheses) are supported.
