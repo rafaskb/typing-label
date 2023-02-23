@@ -9,14 +9,14 @@
      You will also need to add a dependency on RegExodus in your GWT project (it might be useful to have in core, but it
      isn't at all necessary). The Gradle dependencies for GWT are:
      
-     api "com.github.tommyettinger:regexodus:0.1.12"
-     api "com.github.tommyettinger:regexodus:0.1.12:sources"
+     api "com.github.tommyettinger:regexodus:0.1.15"
+     api "com.github.tommyettinger:regexodus:0.1.15:sources"
      
      If you want it in core as well,  you can move the first line to core's dependencies, but keep the second in GWT.
   -->
 <module>
     <source path=""/>
     <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt" />
-    <inherits name="regexodus"/>
+    <inherits name="regexodus.regexodus"/>
     <extend-configuration-property name="gdx.reflect.include" value="com.rafaskoberg.gdx.typinglabel"/>
 </module>
