@@ -1,4 +1,5 @@
 [Unreleased]
+- Added If Conditionals! {IF=GENDER;f=She;m=He;t=Them;Unknown} -- See details in the wiki.
 - Updated Regexodus dependency for GWT. If you use GWT and inherit Regexodus in your project, follow the installation instructions again, as some of them have changed (namely the `inherits` line).
 - Fixed color tags being applied to the incorrect glyph indices. Thanks @tommyettinger!
 

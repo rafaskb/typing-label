@@ -1,0 +1,7 @@
+- Have you seen {IF=GENDER}?
+- Have you seen {IF=GENDER;}?
+- Have you seen {IF=GENDER;Mewtwo}?
+- Have you seen {IF=GENDER;f=;m=;t=}?
+- Have you seen {IF=GENDER;f:Charmander}?
+- Have you seen {IF=GENDER;a=;}?
+- Have you seen {IF=GENDER;a=;=}?

@@ -124,6 +124,14 @@ class Parser {
                     // Make sure we're not inserting "null" to the text.
                     if(replacement == null) replacement = param.toUpperCase();
                     break;
+                case IF:
+                    // Process token
+                    replacement = processIfToken(label, param);
+
+                    // Make sure we're not inserting "null" to the text.
+                    if(replacement == null) replacement = param.toUpperCase();
+
+                    break;
                 case RESET:
                     replacement = RESET_REPLACEMENT + label.getDefaultToken();
                     break;
@@ -140,6 +148,71 @@ class Parser {
 
         // Set new text
         label.setText(text, false, false);
+    }
+
+    private static String processIfToken(TypingLabel label, String paramsString) {
+        // Split params
+        final String[] params = paramsString == null ? new String[0] : paramsString.split(";");
+        final String variable = params.length > 0 ? params[0] : null;
+
+        // Ensure our params are valid
+        if(params.length <= 1 || variable == null) {
+            return null;
+        }
+
+        /*
+            Get variable's value
+         */
+        String variableValue = null;
+
+        // Try to get value through listener.
+        if(label.getTypingListener() != null) {
+            variableValue = label.getTypingListener().replaceVariable(variable);
+        }
+
+        // If value is null, get it from maps.
+        if(variableValue == null) {
+            variableValue = label.getVariables().get(variable.toUpperCase());
+        }
+
+        // If value is still null, get it from global scope
+        if(variableValue == null) {
+            variableValue = TypingConfig.GLOBAL_VARS.get(variable.toUpperCase());
+        }
+
+        // Ensure variable is never null
+        if(variableValue == null) {
+            variableValue = "";
+        }
+
+        // Iterate through params and try to find a match
+        String defaultValue = null;
+        for(int i = 1, n = params.length; i < n; i++) {
+            String[] subParams = params[i].split("=", 2);
+            String key = subParams[0];
+            String value = subParams[subParams.length - 1];
+            boolean isKeyValid = subParams.length > 1 && !key.isEmpty();
+
+            // If key isn't valid, it must be a default value. Store it and carry on
+            if(!isKeyValid) {
+                defaultValue = value;
+                break;
+            }
+
+            // Compare variable's value with key
+            if(variableValue.equalsIgnoreCase(key)) {
+                return value;
+            }
+        }
+
+        // Try to return any default values captured during the iteration
+        if(defaultValue != null) {
+            return defaultValue;
+        }
+
+        // If we got this far, no values matched our variable.
+        // Return the variable itself, which might be useful for debugging.
+        return variable;
     }
 
     /** Parses regular tokens that don't need replacement and register their indexes in the {@link TypingLabel}. */
@@ -364,7 +437,7 @@ class Parser {
             sb.append(tokens.get(i));
             if((i + 1) < tokens.size) sb.append('|');
         }
-        sb.append(")(?:=([;:?^_ #-'*-.\\.\\w]+))?\\").append(CURRENT_DELIMITER.close);
+        sb.append(")(?:=([;:?=^_ #-'*-.\\.\\w]+))?\\").append(CURRENT_DELIMITER.close);
         return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 

@@ -1,0 +1,2 @@
+- Hi {VAR=title}, have you seen {IF=GENDER;f=her;m=him;t=them} today?
+- I saw {IF=gender;f=her;m=him;t=them} this morning. {IF=GENDER;f=She;m=He;t=They} seemed well!

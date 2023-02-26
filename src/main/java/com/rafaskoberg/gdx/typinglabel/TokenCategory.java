@@ -5,6 +5,7 @@ public enum TokenCategory {
     SPEED,
     COLOR,
     VARIABLE,
+    IF,
     EVENT,
     RESET,
     SKIP,

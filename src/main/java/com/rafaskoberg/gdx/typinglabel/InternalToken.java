@@ -15,6 +15,7 @@ enum InternalToken {
 	CLEARCOLOR    ("CLEARCOLOR",    TokenCategory.COLOR    ),
 	ENDCOLOR      ("ENDCOLOR",      TokenCategory.COLOR    ),
 	VAR           ("VAR",           TokenCategory.VARIABLE ),
+	IF            ("IF",            TokenCategory.IF       ),
 	EVENT         ("EVENT",         TokenCategory.EVENT    ),
 	RESET         ("RESET",         TokenCategory.RESET    ),
 	SKIP          ("SKIP",          TokenCategory.SKIP     );

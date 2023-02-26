@@ -170,8 +170,9 @@ public class TypingLabelTest extends ApplicationAdapter {
         // Make the label wrap to new lines, respecting the table's layout.
         label.setWrap(true);
 
-        // Set variable replacements for the {VAR} token
+        // Set variable replacements for the {VAR} and {IF} tokens
         label.setVariable("title", "curious human");
+        label.setVariable("gender", "f");
 
         // Set an event listener for when the {EVENT} token is reached and for the char progression ends.
         label.setTypingListener(new TypingAdapter() {
