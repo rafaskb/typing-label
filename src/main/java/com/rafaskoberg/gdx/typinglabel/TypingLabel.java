@@ -12,12 +12,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /**
@@ -34,8 +31,8 @@ public class TypingLabel extends Label {
     protected final Array<TokenEntry>         tokenEntries = new Array<TokenEntry>();
 
     // Config
-    private Color          clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
-    private TypingListener listener   = null;
+    private Color clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
+    private final Array<TypingListener> listeners = new Array<>(TypingListener.class);
     boolean forceMarkupColor = TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT;
 
     // Internal state
@@ -169,14 +166,19 @@ public class TypingLabel extends Label {
     /// --- External API --- ///
     ////////////////////////////
 
-    /** Returns the {@link TypingListener} associated with this label. May be {@code null}. */
-    public TypingListener getTypingListener() {
-        return listener;
+    /** Returns the {@link TypingListener}s associated with this label. May be empty. */
+    public Array<TypingListener> getTypingListeners() {
+        return listeners;
     }
 
-    /** Sets the {@link TypingListener} associated with this label, or {@code null} to remove the current one. */
-    public void setTypingListener(TypingListener listener) {
-        this.listener = listener;
+    /** Adds a {@link TypingListener} to this label. */
+    public void addTypingListener(TypingListener listener) {
+        listeners.add(listener);
+    }
+
+    /** Clears all {@link TypingListener}s associated with this label. */
+    public void clearTypingListeners() {
+        listeners.clear();
     }
 
     /**
@@ -460,7 +462,9 @@ public class TypingLabel extends Label {
                 if(!ended) {
                     ended = true;
                     skipping = false;
-                    if(listener != null) listener.end();
+                    for(TypingListener listener : listeners) {
+                       listener.end();
+                    }
                 }
                 return;
             }
@@ -500,8 +504,10 @@ public class TypingLabel extends Label {
                         continue;
                     }
                     case EVENT: {
-                        if(this.listener != null && !ignoringEvents) {
-                            listener.event(entry.stringValue);
+                        if(!ignoringEvents) {
+                            for(TypingListener listener : listeners) {
+                                listener.event(entry.stringValue);
+                            }
                         }
                         continue;
                     }
@@ -534,8 +540,10 @@ public class TypingLabel extends Label {
             // Notify listener about char progression
             int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
             Character nextChar = nextIndex == 0 ? null : getText().charAt(nextIndex);
-            if(nextChar != null && listener != null) {
-                listener.onChar(nextChar);
+            if(nextChar != null) {
+                for(TypingListener listener : listeners) {
+                    listener.onChar(nextChar);
+                }
             }
 
             // Increment char counter

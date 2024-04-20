@@ -106,9 +106,10 @@ class Parser {
                 case VAR:
                     replacement = null;
 
-                    // Try to replace variable through listener.
-                    if(label.getTypingListener() != null) {
-                        replacement = label.getTypingListener().replaceVariable(param);
+                    // Try to replace variable through listeners.
+                    for(TypingListener listener : label.getTypingListeners()) {
+                        replacement = listener.replaceVariable(param);
+                        if(replacement != null) break;
                     }
 
                     // If replacement is null, get value from maps.
@@ -166,8 +167,9 @@ class Parser {
         String variableValue = null;
 
         // Try to get value through listener.
-        if(label.getTypingListener() != null) {
-            variableValue = label.getTypingListener().replaceVariable(variable);
+        for(TypingListener listener : label.getTypingListeners()) {
+            variableValue = listener.replaceVariable(variable);
+            if(variableValue != null) break;
         }
 
         // If value is null, get it from maps.

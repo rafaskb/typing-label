@@ -175,7 +175,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         label.setVariable("gender", "f");
 
         // Set an event listener for when the {EVENT} token is reached and for the char progression ends.
-        label.setTypingListener(new TypingAdapter() {
+        label.addTypingListener(new TypingAdapter() {
             @Override
             public void event(String event) {
                 System.out.println("Event: " + event);
