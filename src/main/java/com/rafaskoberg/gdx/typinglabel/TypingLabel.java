@@ -885,12 +885,16 @@ public class TypingLabel extends Label {
         // Here we store color as its components, to avoid producing garbage and to allow modifying the local color.
         float r = color.r, g = color.g, b = color.b, a = color.a;
         for(TypingGlyph glyph : glyphCache) {
-            if(glyph.internalIndex >= 0 && glyph.color != null) {
-                // Unless we want to use a packed float, it's easiest to pass a Color object here, multiplying this
-                // Label color (as its components) by the color of the individual glyph.
-                bitmapFontCache.setColors(
-                        color.set(glyph.color).mul(r, g, b, a),
-                        glyph.internalIndex, glyph.internalIndex + 1);
+            if (glyph.internalIndex >= 0) {
+                if (glyph.color != null) {
+                    // Unless we want to use a packed float, it's easiest to pass a Color object here, multiplying this
+                    // Label color (as its components) by the color of the individual glyph.
+                    bitmapFontCache.setColors(
+                            Color.toFloatBits(r * glyph.color.r, g * glyph.color.g, b * glyph.color.b, a * glyph.color.a),
+                            glyph.internalIndex, glyph.internalIndex + 1);
+                } else if(a < 1f) {
+                    bitmapFontCache.setColors(color, glyph.internalIndex, glyph.internalIndex + 1);
+                }
             }
         }
 
