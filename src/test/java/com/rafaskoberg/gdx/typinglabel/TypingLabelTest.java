@@ -25,6 +25,7 @@ public class TypingLabelTest extends ApplicationAdapter {
     Skin        skin;
     Stage       stage;
     SpriteBatch batch;
+    Table       table;
     TypingLabel label;
     TypingLabel labelEvent;
     TextButton  buttonPause;
@@ -48,7 +49,7 @@ public class TypingLabelTest extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
 
         // Create root table
-        final Table table = new Table();
+        table = new Table();
         stage.addActor(table);
         table.setFillParent(true);
 
@@ -162,8 +163,11 @@ public class TypingLabelTest extends ApplicationAdapter {
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
 
-        // Set default token
-        String defaultToken = "{EASE}{FADE=0;1;0.33}";
+        // Set default token; this line only eases in glyphs with movement...
+        String defaultToken = "{EASE}";
+        // While this line eases them in with movement and transparency.
+//        String defaultToken = "{EASE}{FADE=0;1;0.33}";
+
         defaultToken = defaultToken.replace('{', cOpen).replace('}', cClose);
         label.setDefaultToken(defaultToken);
 
@@ -209,6 +213,8 @@ public class TypingLabelTest extends ApplicationAdapter {
 
     public void update(float delta) {
         stage.act(delta);
+        // TODO: This is only here to debug Issue #28 . It is related to the default token omitting FADE.
+//        table.getColor().a = 0.2f;
     }
 
     @Override
