@@ -22,17 +22,17 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class TypingLabelTest extends ApplicationAdapter {
-    Skin        skin;
-    Stage       stage;
+    Skin skin;
+    Stage stage;
     SpriteBatch batch;
-    Table       table;
+    Table table;
     TypingLabel label;
     TypingLabel labelEvent;
-    TextButton  buttonPause;
-    TextButton  buttonResume;
-    TextButton  buttonRestart;
-    TextButton  buttonRebuild;
-    TextButton  buttonSkip;
+    TextButton buttonPause;
+    TextButton buttonResume;
+    TextButton buttonRestart;
+    TextButton buttonRebuild;
+    TextButton buttonSkip;
 
     @Override
     public void create() {
@@ -163,11 +163,8 @@ public class TypingLabelTest extends ApplicationAdapter {
         // Create label
         final TypingLabel label = new TypingLabel(text, skin);
 
-        // Set default token; this line only eases in glyphs with movement...
+        // Set default token
         String defaultToken = "{EASE}";
-        // While this line eases them in with movement and transparency.
-//        String defaultToken = "{EASE}{FADE=0;1;0.33}";
-
         defaultToken = defaultToken.replace('{', cOpen).replace('}', cClose);
         label.setDefaultToken(defaultToken);
 
@@ -213,8 +210,6 @@ public class TypingLabelTest extends ApplicationAdapter {
 
     public void update(float delta) {
         stage.act(delta);
-        // TODO: This is only here to debug Issue #28 . It is related to the default token omitting FADE.
-//        table.getColor().a = 0.2f;
     }
 
     @Override
