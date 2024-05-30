@@ -17,7 +17,7 @@ It works as a drop-in replacement for normal [Scene2D Labels](https://libgdx.com
 Open _build.gradle_ in project root and add this to the _ext_ section under _allprojects_:
 
 ```groovy
-typingLabelVersion = '1.3.0'
+typingLabelVersion = '1.4.0'
 regExodusVersion = '0.1.13' // Only if you're using HTML / GWT
 ```
 
