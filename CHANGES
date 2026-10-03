@@ -1,5 +1,6 @@
 [Unreleased]
-- Nothing here so far.
+- Fixed tokens being ignored when their parameters contained accented letters, non-Latin scripts, or punctuation, e.g. {IF=GENDER;f=Funcionária;m=Funcionário}. Parameters now accept any character up to the closing delimiter.
+- Behavior change: known tokens with parameters that used to be considered invalid (e.g. {COLOR=açaí}) are no longer left as raw text, they are now parsed and handled by the token itself.
 
 [1.4.0]
 - BREAKING CHANGE: Added support for multiple TypingListeners in TypingLabel. Methods "getTypingListener" and "getTypingListeners" were replaced by "setTypingListener" and "addTypingListener".

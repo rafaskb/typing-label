@@ -439,7 +439,9 @@ class Parser {
             sb.append(tokens.get(i));
             if((i + 1) < tokens.size) sb.append('|');
         }
-        sb.append(")(?:=([;:?=^_ #-'*-.\\.\\w]+))?\\").append(CURRENT_DELIMITER.close);
+        // Params accept any character up to the closing delimiter, so text in any language or with punctuation is valid.
+        sb.append(")(?:=([^\\").append(CURRENT_DELIMITER.open).append("\\").append(CURRENT_DELIMITER.close).append("]+))?");
+        sb.append("\\").append(CURRENT_DELIMITER.close);
         return Pattern.compile(sb.toString(), REFlags.IGNORE_CASE);
     }
 
