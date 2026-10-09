@@ -71,9 +71,9 @@ repositories {
 }
 
 dependencies {
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    api "com.github.tommyettinger:regexodus:$regExodusVersion"
-
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    api group: 'com.badlogicgames.gdx', name: 'gdx', version: gdxVersion
+    api group: 'com.github.tommyettinger', name: 'regexodus', version: regExodusVersion
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-backend-lwjgl3', version: gdxVersion
+    testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-platform', version: gdxVersion, classifier: 'natives-desktop'
 }
