@@ -15,7 +15,7 @@ public class WindEffect extends Effect {
     private static final float DISTANCE_Y_RATIO  = 1.0f;
     private static final float IDEAL_DELTA       = 60f;
 
-    private SimplexNoise noise        = new SimplexNoise(1, 0.5f, 1f);
+    private static final SimplexNoise noise      = new SimplexNoise(1, 0.5f, 1f);
     private float        noiseCursorX = 0;
     private float        noiseCursorY = 0;
 

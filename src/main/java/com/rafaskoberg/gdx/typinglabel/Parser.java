@@ -14,11 +14,10 @@ import regexodus.REFlags;
 
 /** Utility class to parse tokens from a {@link TypingLabel}. */
 class Parser {
-    private static TokenDelimiter CURRENT_DELIMITER    = TypingConfig.TOKEN_DELIMITER;
-    private static Pattern        PATTERN_TOKEN_STRIP  = compileTokenPattern();
-    private static Pattern        PATTERN_MARKUP_STRIP = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
-
-    private static final Pattern PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
+    private static TokenDelimiter CURRENT_DELIMITER         = TypingConfig.TOKEN_DELIMITER;
+    private static Pattern        PATTERN_TOKEN_STRIP       = compileTokenPattern();
+    private static final Pattern  PATTERN_MARKUP_STRIP      = Pattern.compile("(\\[{2})|(\\[#?\\w*(\\[|\\])?)");
+    private static final Pattern  PATTERN_COLOR_HEX_NO_HASH = Pattern.compile("[A-F0-9]{6}");
 
     private static final String[] BOOLEAN_TRUE = {"true", "yes", "t", "y", "on", "1"};
     private static final int      INDEX_TOKEN  = 1;
@@ -69,14 +68,12 @@ class Parser {
         boolean hasMarkup = label.getBitmapFontCache().getFont().getData().markupEnabled;
 
         // Create string builder
-        StringBuilder sb = new StringBuilder(text.length());
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
         int matcherIndexOffset = 0;
 
         // Iterate through matches
         while(true) {
-            // Reset StringBuilder and matcher
-            sb.setLength(0);
+            // Reset matcher
             m.setTarget(text);
             m.setPosition(matcherIndexOffset);
 
@@ -224,14 +221,12 @@ class Parser {
 
         // Create matcher and StringBuilder
         Matcher m = PATTERN_TOKEN_STRIP.matcher(text);
-        StringBuilder sb = new StringBuilder(text.length());
         int matcherIndexOffset = 0;
 
         // Iterate through matches
         while(true) {
-            // Reset matcher and StringBuilder
+            // Reset matcher
             m.setTarget(text);
-            sb.setLength(0);
             m.setPosition(matcherIndexOffset);
 
             // Make sure there's at least one regex match
@@ -362,7 +357,7 @@ class Parser {
         if(str != null) {
             try {
                 return Float.parseFloat(str);
-            } catch(Exception e) {
+            } catch(Exception ignored) {
             }
         }
         return defaultValue;

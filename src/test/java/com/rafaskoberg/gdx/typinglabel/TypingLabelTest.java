@@ -2,8 +2,8 @@ package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -234,18 +234,15 @@ public class TypingLabelTest extends ApplicationAdapter {
     }
 
     public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "TypingLabel Test";
-        config.width = 720;
-        config.height = 405;
-        config.depth = 16;
-        config.fullscreen = false;
-        config.resizable = false;
-        config.foregroundFPS = 60;
-        config.backgroundFPS = 60;
-        config.forceExit = false;
+        if(StartupHelper.startNewJvmIfRequired(true)) return;
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("TypingLabel Test");
+        config.setWindowedMode(720, 405);
+        config.setResizable(false);
+        config.setForegroundFPS(60);
+        config.setIdleFPS(60);
 
-        new LwjglApplication(new TypingLabelTest(), config);
+        new Lwjgl3Application(new TypingLabelTest(), config);
     }
 
 }

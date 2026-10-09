@@ -3,28 +3,28 @@ package com.rafaskoberg.gdx.typinglabel;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DefaultPool;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.ReflectionPool;
 
 /** Utility class to manage {@link Glyph} pooling and cloning. */
 class GlyphUtils {
-    private static final Pool<TypingGlyph> pool = new ReflectionPool<TypingGlyph>(TypingGlyph.class) {
+    private static final Pool<TypingGlyph> pool = new DefaultPool<TypingGlyph>(TypingGlyph::new) {
         protected void reset(TypingGlyph glyph) {
             GlyphUtils.reset(glyph);
         }
     };
 
     /**
-     * Returns a glyph from this pool. The glyph may be new (from {@link Pool#newObject()}) or reused (previously {@link
-     * Pool#free(Object) freed}).
+     * Returns a glyph from this pool. The glyph may be new (from {@link Pool#obtain()}) or reused (previously
+     * {@link Pool#free(Object) freed}).
      */
     static TypingGlyph obtain() {
         return pool.obtain();
     }
 
     /**
-     * Returns a glyph from this pool and clones it from the given one. The glyph may be new (from {@link
-     * Pool#newObject()}) or reused (previously {@link Pool#free(Object) freed}).
+     * Returns a glyph from this pool and clones it from the given one. The glyph may be new (from
+     * {@link #obtain()}) or reused (previously {@link Pool#free(Object) freed}).
      */
     static Glyph obtainClone(Glyph from) {
         TypingGlyph glyph = pool.obtain();

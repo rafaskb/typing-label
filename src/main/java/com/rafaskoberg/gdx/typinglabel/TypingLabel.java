@@ -12,8 +12,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.CharArray;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -27,16 +30,16 @@ public class TypingLabel extends Label {
     ///////////////////////
 
     // Collections
-    private final   ObjectMap<String, String> variables    = new ObjectMap<String, String>();
-    protected final Array<TokenEntry>         tokenEntries = new Array<TokenEntry>();
+    private final ObjectMap<String, String> variables    = new ObjectMap<String, String>();
+    final Array<TokenEntry>                 tokenEntries = new Array<TokenEntry>();
 
     // Config
-    private Color clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
-    private final Array<TypingListener> listeners = new Array<>(TypingListener.class);
+    private final Color clearColor = new Color(TypingConfig.DEFAULT_CLEAR_COLOR);
+    private final Array<TypingListener> listeners = new Array<>(TypingListener[]::new);
     boolean forceMarkupColor = TypingConfig.FORCE_COLOR_MARKUP_BY_DEFAULT;
 
     // Internal state
-    private final StringBuilder      originalText          = new StringBuilder();
+    private final CharArray          originalText          = new CharArray();
     private final Array<TypingGlyph> glyphCache            = new Array<TypingGlyph>();
     private final IntArray           glyphRunCapacities    = new IntArray();
     private final IntArray           offsetCache           = new IntArray();
@@ -139,12 +142,12 @@ public class TypingLabel extends Label {
     }
 
     /** Similar to {@link #getText()}, but returns the original text with all the tokens unchanged. */
-    public StringBuilder getOriginalText() {
+    public CharArray getOriginalText() {
         return originalText;
     }
 
     /**
-     * Copies the content of {@link #getText()} to the {@link StringBuilder} containing the original text with all
+     * Copies the content of {@link #getText()} to the {@link CharArray} containing the original text with all
      * tokens unchanged.
      */
     protected void saveOriginalText() {
@@ -448,16 +451,16 @@ public class TypingLabel extends Label {
             rawCharIndex++;
 
             // Get next character and calculate cooldown increment
-            int safeIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
+            int safeIndex = MathUtils.clamp(rawCharIndex, 0, getText().size - 1);
             char primitiveChar = '\u0000'; // Null character by default
-            if(getText().length > 0) {
+            if(getText().size > 0) {
                 primitiveChar = getText().charAt(safeIndex);
                 float intervalMultiplier = TypingConfig.INTERVAL_MULTIPLIERS_BY_CHAR.get(primitiveChar, 1);
                 charCooldown += textSpeed * intervalMultiplier;
             }
 
             // If char progression is finished, or if text is empty, notify listener and abort routine
-            int textLen = getText().length;
+            int textLen = getText().size;
             if(textLen == 0 || rawCharIndex >= textLen) {
                 if(!ended) {
                     ended = true;
@@ -538,7 +541,7 @@ public class TypingLabel extends Label {
             }
 
             // Notify listener about char progression
-            int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().length - 1);
+            int nextIndex = MathUtils.clamp(rawCharIndex, 0, getText().size - 1);
             Character nextChar = nextIndex == 0 ? null : getText().charAt(nextIndex);
             if(nextChar != null) {
                 for(TypingListener listener : listeners) {
@@ -633,7 +636,7 @@ public class TypingLabel extends Label {
     public void layout() {
         // --- SUPERCLASS IMPLEMENTATION ---
         BitmapFontCache cache = getBitmapFontCache();
-        StringBuilder text = getText();
+        CharArray text = getText();
         GlyphLayout layout = super.getGlyphLayout();
         int lineAlign = getLineAlign();
         int labelAlign = getLabelAlign();
@@ -666,7 +669,7 @@ public class TypingLabel extends Label {
         float textWidth, textHeight;
         if(wrap || text.indexOf("\n") != -1) {
             // If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-            layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
+            layout.setText(font, text, 0, text.size, Color.WHITE, width, lineAlign, wrap, ellipsis);
             textWidth = layout.width;
             textHeight = layout.height;
 
@@ -692,7 +695,7 @@ public class TypingLabel extends Label {
         }
         if(!cache.getFont().isFlipped()) y += textHeight;
 
-        layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+        layout.setText(font, text, 0, text.size, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
         cache.setText(layout, x, y);
 
         if(fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);

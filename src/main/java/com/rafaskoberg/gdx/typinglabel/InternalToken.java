@@ -24,7 +24,7 @@ enum InternalToken {
     final String        name;
     final TokenCategory category;
 
-    private InternalToken(String name, TokenCategory category) {
+    InternalToken(String name, TokenCategory category) {
         this.name = name;
         this.category = category;
     }

@@ -2,22 +2,23 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.17.0'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.35.0'
     }
 }
 
 apply plugin: 'java-library'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'idea'
 
-sourceCompatibility = 1.7
+java.sourceCompatibility = 1.8
 
-def projectName = 'typing-label'
-version "$VERSION_NAME"
-group 'com.rafaskoberg.gdx'
+def projectName = "typing-label"
+version = "$VERSION_NAME"
+group = "com.rafaskoberg.gdx"
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -25,43 +26,54 @@ group 'com.rafaskoberg.gdx'
 // http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
-        tasks.withType(Javadoc) {
-            // The -quiet is because of some sort of weird JDK JavaCompiler bug:
-            // https://discuss.gradle.org/t/passing-arguments-to-compiler-and-javadoc/1661
-            options.addStringOption('Xdoclint:none,-missing', '-quiet')
+        tasks.withType(Javadoc).tap {
+            configureEach {
+                // The -quiet is because of some sort of weird JDK JavaCompiler bug:
+                // https://discuss.gradle.org/t/passing-arguments-to-compiler-and-javadoc/1661
+                options.addStringOption('Xdoclint:none,-missing', '-quiet')
+            }
         }
     }
 }
 
 if(JavaVersion.current().isJava9Compatible()) {
     allprojects {
-        tasks.withType(JavaCompile) {
-            options.release.set(7)
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                options.release.set(8)
+            }
         }
     }
 }
 
 sourceSets.test.resources.srcDirs = [ file('src/test/resources').path ]
 
+tasks.withType(AbstractTestTask).configureEach {
+    failOnNoDiscoveredTests = false
+}
+
+idea.module.excludeDirs += [file("docs/")]
+
 javadoc.destinationDir = file('docs/apidocs')
 
 jar {
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveBaseName.set(projectName)
     manifest {
-        attributes 'Implementation-Title': projectName, 'Implementation-Version': archiveVersion
+        attributes 'Implementation-Title': projectName, 'Implementation-Version': archiveVersion, 'Enable-Native-Access': 'ALL-UNNAMED'
     }
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
 }
 
 dependencies {
     api group: 'com.badlogicgames.gdx', name: 'gdx', version: gdxVersion
     api group: 'com.github.tommyettinger', name: 'regexodus', version: regExodusVersion
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-    testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-backend-lwjgl', version: gdxVersion
+    testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-backend-lwjgl3', version: gdxVersion
     testImplementation group: 'com.badlogicgames.gdx', name: 'gdx-platform', version: gdxVersion, classifier: 'natives-desktop'
 }
